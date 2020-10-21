@@ -1,0 +1,15 @@
+Package: circleclust
+Title: Spatiotemporal Clustering for Personal Location Data
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Chris",
+           family = "Wolfe",
+           role = c("aut", "cre"),
+           email = "chris.wolfe@cchmc.org",
+           comment = c(ORCID = "https://orcid.org/0000-0002-5882-1149"))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
