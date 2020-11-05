@@ -10,42 +10,42 @@ impute_coords(
   jitter_amount = 1e-05,
   show_lapse_distance = FALSE,
   fill_open_lapses = FALSE,
-  speed_threshold = 5,
-  speed_window = 60,
-  open_lapse_length = 600
+  speed_threshold = NULL,
+  speed_window = NULL,
+  open_lapse_length = NULL
 )
 }
 \arguments{
-\item{df}{data frame created by \code{ufp_read()}.}
+\item{df}{data frame containing latitude (\code{lat}) and longitude (\code{lon})}
 
-\item{distance_threshold}{distance (meters) between the last known coordinates before
-a GPS lapse and the first known coordinates after a lapse are compared to
+\item{distance_threshold}{numeric; distance (meters) between the last known coordinates before
+GPS signal loss and the first known coordinates following signal loss are compared to
 this value.  If the distance exceeds this threshold, coordinates are not
-imputed. Default = 100.}
+imputed. Default = 100 meters.}
 
 \item{jitter_amount}{numeric; amount of jitter to apply to imputed coords.
 Default = 0.00001 decimal degrees. See \code{\link[sf]{st_jitter}}.}
 
-\item{show_lapse_distance}{NEEDS A DEF}
+\item{show_lapse_distance}{logical; if \code{TRUE}, a column will be added to the output data frame
+listing the distance between the last and first know coordinates for each lapse in
+GPS signal. Default = \code{FALSE}.}
 
-\item{fill_open_lapses}{logical; impute missing coordinates at the
-beginning and end of the data frame (i.e. lapses not enclosed by known
-coordinates). Default = FALSE.}
+\item{fill_open_lapses}{logical; if \code{TRUE},missing coordinates at the
+beginning and end of the data frame are imputed (i.e. lapses not enclosed by known
+coordinates). Default = \code{FALSE}.}
 
-\item{speed_threshold}{criteria to impute open lapses. If the median speed
-of cooridnates before or after an open lapse exceeds this threshold,
-coordinates are not imputed.  Default = 5 (m/s).}
+\item{speed_threshold}{numeric; criteria to impute open lapses. If the median speed (m/s)
+of coordinates before or after an open lapse exceeds this threshold,
+coordinates are not imputed.}
 
-\item{speed_window}{numeric; number of rows used to calculate
-'speed_threshold.'}
+\item{speed_window}{numeric; number of rows used to calculate \code{speed_threshold}.}
 
-\item{open_lapse_length}{if the number of rows in an open lapse exceed this
-threshold, coordinates are not imputed. Default = 600.}
+\item{open_lapse_length}{numeric; if the number of rows in an open lapse exceed this
+threshold, coordinates are not imputed.}
 }
 \value{
-a data frame.  An additional column is created to indicate whehter
-coordinates were imputed ('imputed_coord'). he function also creates an
-additional column stating the distance between lapses ('lapse_distance').
+a data frame.  An additional column is created to indicate whether
+coordinates were imputed ('imputed_coord').
 }
 \description{
 \code{impute_coords()} imputes missing lon/lat coordinates that occur during GPS lapses.
@@ -55,7 +55,7 @@ additional column stating the distance between lapses ('lapse_distance').
 
 impute_coords(df,
   distance_threshold = 100, jitter_amount = 0.00001, fill_open_lapses = FALSE,
-  speed_threshold = 5, speed_window = 60, open_lapse_length = 600
+  speed_threshold = NULL, speed_window = NULL, open_lapse_length = NULL
 )
 }
 }

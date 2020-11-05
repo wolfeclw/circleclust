@@ -16,12 +16,12 @@
 #' @param fill_open_lapses logical; if `TRUE`,missing coordinates at the
 #' beginning and end of the data frame are imputed (i.e. lapses not enclosed by known
 #' coordinates). Default = `FALSE`.
-#' @param speed_threshold numeric; criteria to impute open lapses. If the median speed
+#' @param speed_threshold numeric; criteria to impute open lapses. If the median speed (m/s)
 #' of coordinates before or after an open lapse exceeds this threshold,
-#' coordinates are not imputed.  Default = 5 (m/s).
+#' coordinates are not imputed.
 #' @param speed_window numeric; number of rows used to calculate `speed_threshold`.
 #' @param open_lapse_length numeric; if the number of rows in an open lapse exceed this
-#' threshold, coordinates are not imputed. Default = 600.
+#' threshold, coordinates are not imputed.
 #'
 #' @return a data frame.  An additional column is created to indicate whether
 #' coordinates were imputed ('imputed_coord').
@@ -32,7 +32,7 @@
 #'
 #' impute_coords(df,
 #'   distance_threshold = 100, jitter_amount = 0.00001, fill_open_lapses = FALSE,
-#'   speed_threshold = 5, speed_window = 60, open_lapse_length = 600
+#'   speed_threshold = NULL, speed_window = NULL, open_lapse_length = NULL
 #' )
 #' }
 impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00001, show_lapse_distance = FALSE,
@@ -40,8 +40,15 @@ impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00001,
                        open_lapse_length = NULL) {
 
 
+  open_parms_lgl <- sum(purrr::map_lgl(c(speed_threshold, speed_window, open_lapse_length),
+                                       is.numeric))
+
   d_imputed <- if (sum(!is.na(df$lat)) == nrow(df) | sum(!is.na(df$lat)) == 0) {
     df %>% mutate(imputed_coord = 0)
+  } else if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
+    stop(paste('To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,',
+               'and `open_lapse_lenth`.', sep = '\n'),
+         call. = FALSE)
   } else if (fill_open_lapses == TRUE) {
     impute_coords_open(df,
       distance_threshold = distance_threshold, jitter_amount = jitter_amount,
@@ -67,6 +74,12 @@ impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00001,
       "A total of ", n_na_coords, " (", scales::percent(n_na_coords / nrow(d_imputed)), ")",
       " of the coordinates are missing GPS data after imputation."
     ))
+  }
+
+  if (fill_open_lapses == FALSE & open_parms_lgl > 0) {
+    warning(paste('Values assigned to `speed_threshold`, `speed_window`, and/or `open_lapse_lenth` were ignored.',
+                  'Set `fill_open_lapses` == `TRUE`.', sep = '\n'),
+            call. = FALSE)
   }
 
   if (sum(!is.na(df$lat)) == nrow(df)) {
