@@ -22,7 +22,6 @@
 #' )
 #' }
 #' @importFrom stats median
-#' @importFrom purrr map map_chr map_lgl
 dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celiling = "floor",
                           summary_fun = "median") {
 
@@ -34,36 +33,48 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
 
   if (floor_or_celiling == "floor") {
     d_agg <- df %>%
-      mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
-      group_by(agg_dt) %>%
-      summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
-      relocate(agg_dt)
+      dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
+      dplyr::group_by(agg_dt) %>%
+      dplyr::summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
+      dplyr::rename('{{dt_field}}' := agg_dt)
+
+    n <- gsub('["]', '', names(d_agg))
+    colnames(d_agg) <- n
+
   } else {
     d_agg <- df %>%
-      mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
-      group_by(agg_dt) %>%
-      summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
-      relocate(agg_dt)
+      dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
+      dplyr::group_by(agg_dt) %>%
+      dplyr::summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
+      dplyr::rename('{{dt_field}}' := agg_dt)
+
+    n <- gsub('["]', '', names(d_agg))
+    colnames(d_agg) <- n
     }
 
-  char_cols <- select_if(df, is.character)
-  char_lgl <- char_cols %>%
-    map(., unique) %>%
-    map_chr(., length) %>%
-    map_lgl(., ~. == 1)
+  no_num_cols <- dplyr::select_if(df, ~!is.numeric(.)) %>% dplyr::select(., -{{dt_field}})
 
-  char_keep <- char_cols[char_lgl][1:nrow(d_agg), ]
-  rm_cols <- char_cols[!char_lgl] %>% names()
+  if (ncol(no_num_cols) == 0) {
+    d_agg
+  } else {
+    unq_lgl <- no_num_cols %>%
+      purrr::map(., unique) %>%
+      purrr::map_chr(., length) %>%
+      purrr::map_lgl(., ~. == 1)
 
-  if (length(rm_cols > 0)) {
-    message(
-      "Columns `", paste(rm_cols, collapse = ", "),
-      "` are of class 'character' and were removed during aggregation."
-    )
+    char_keep <- no_num_cols[unq_lgl][1:nrow(d_agg), ]
+    rm_cols <- no_num_cols[!unq_lgl] %>% names()
   }
 
-  d_agg_char <- bind_cols(char_keep, d_agg)
-  d_agg_char <- relocate(d_agg_char, .after = last_col())
+  if (length(no_num_cols > 0)) {
+    message(
+      "Column(s) `", paste(rm_cols, collapse = ", "),
+      "` are of class 'character' and contain more than one unique value. These columns were \n removed during aggregation."
+    )
 
-  d_agg_char
+    d_agg <- dplyr::bind_cols(char_keep, d_agg)
+    d_agg <- dplyr::relocate(d_agg, .data[[dt_field]])
+  }
+
+  d_agg
 }
