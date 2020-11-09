@@ -16,7 +16,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' dt_aggregate(df,
+#' dt_aggregate(df, dt_field = 'Date_Time',
 #'   unit = "5 seconds", floor_or_ceiling = "floor",
 #'   summary_fun = "median"
 #' )
@@ -28,7 +28,9 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
   if (is.null(dt_field)) {
     stop('`dt_field` has not been assigned a value.', call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
-    stop('`dt_field` is not a datetiime column.', call. = FALSE)
+    c_dt_field <- class(df[[dt_field]])
+    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
+         call. = FALSE)
   }
 
   if (floor_or_celiling == "floor") {

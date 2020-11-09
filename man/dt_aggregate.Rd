@@ -34,7 +34,7 @@ unique character values are retained (i.e. patient ID, sensor name).
 \examples{
 \dontrun{
 
-dt_aggregate(df,
+dt_aggregate(df, dt_field = 'Date_Time',
   unit = "5 seconds", floor_or_ceiling = "floor",
   summary_fun = "median"
 )
