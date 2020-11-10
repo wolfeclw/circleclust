@@ -9,20 +9,32 @@
 #' to identify clustering, and the minimum number of observations allowed in a
 #' cluster.
 #'
+#' Observations belonging to a cluster are assigned to a cluster group (`cluster_grp`),
+#' which are ordered temporally. Further, observations are marked as either
+#' static or mobile (`activity_status`).
+#'
 #' Imputing lon/lat values using `impute_coords()` is recommended if GPS
 #' coordinates are missing.
 #'
 #' @param df a data frame with columns `speed` and `azimuth` created by `move()`.
 #' The data frame must also include datetime, longitude, and latitude colums.
-#' @param circvar_threshold numeric; Circular variance threshold to determine clustering.
+#' @param circvar_threshold numeric; circular variance threshold to determine clustering.
 #' Default = 0.7.
-#' @param window numeric; Window (number of rows) in which to calculate circular variance.
-#' @param cluster_threshold numeric; The minimum allowable number of observations
-#' in each cluster.  If the number of observations in an identified cluster is less than this threshold,
-#' the observations are retained but not assigned a cluster value.
+#' @param window numeric; window (number of rows) in which to calculate circular variance.
 #' @param show_circvar logical; if `TRUE`, a column will be added to the output data
 #' frame listing the circular variance (`circvar`) for each observation.
 #' Default = `FALSE`.
+#' @param rspeed_threshold numeric; if assigned a numeric value, the 1-minute rolling
+#' median speed (m/s) is calculated. Observations with a circular variance above
+#' 'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster.
+#' @param pl_dist_threshold numeric; distance threshold (meters) used to aggregate
+#' clusters. If the distance between consecutive clusters is below this threshold,
+#' each cluster, and the coordinates between them, are combined into a single
+#' grouping of coordinates.
+#' @param cluster_threshold numeric; the minimum allowable number of observations
+#' in each cluster.  If the number of observations in an identified cluster is less than this threshold,
+#' the observations are retained but not assigned a to a cluster.
+#'
 #'
 #' @return a tibble.
 #' @export
@@ -30,13 +42,13 @@
 #' @examples
 #' \dontrun{
 #'
-#' circleclust(df,
-#'   circvar_threshold = .7, window = 60, cluster_threshold = NULL,
-#'   show_circvar = FALSE
-#' )
+#' circleclust(df, circvar_threshold = .7, window = 60, cluster_threshold = NULL,
+#'   show_circvar = FALSE, rspeed_threshold = NULL,
+#'   pl_dist_threshold = NULL,  cluster_threshold = NULL)
 #' }
 circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60,
-                        cluster_threshold = NULL, show_circvar = FALSE) {
+                        show_circvar = FALSE, rspeed_threshold = NULL,
+                        pl_dist_threshold = NULL,  cluster_threshold = NULL) {
   if (sum(stringr::str_detect(names(df), "azimuth")) == 0) {
     stop("Column 'azimuth' not found.  Use `move()` to calculate the azimuth",
       call. = FALSE
@@ -68,21 +80,23 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
       res_length = ifelse(is.na(lat), NA, sqrt(a_y2 + a_x2)),
       circvar = round(1 - res_length, digits = 1))
 
-  rspeed_minute <- function(x, rs_window) {
+  if (is.null(rspeed_threshold)) {
+    d_break <- d_variance %>%
+      mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
+             rw_num = row_number())
+    # %>%
+    #   select(-c(a_rad:res_length))
+  } else if (is.numeric(rspeed_threshold)) {
 
-    if (sum(is.na(x)) > 0) {
-      zoo::rollmedian(x, rs_window, na.rm = TRUE, fill = NA, align = "center")
-    } else {
-      zoo::rollmedian(x, rs_window, fill = NA, align = "center")
-    }
+    d_break <- d_variance %>%
+      mutate(roll_speed = rspeed_minute(speed_ms, t_unit_window),
+             roll_speed = zoo::na.locf(roll_speed, na.rm = FALSE, maxgap = t_unit_window),
+             move_break = ifelse(circvar >= circvar_threshold & roll_speed <= rspeed_threshold, 1, 0),
+             rw_num = row_number()) %>%
+      select(-c(a_rad:res_length, roll_speed))
+  } else {
+    stop('`rspeed_threshold` must be numeric or set to NULL', call. = FALSE)
   }
-
-  d_break <- d_variance %>%
-    mutate(roll_speed = rspeed_minute(speed_ms, t_unit_window),
-           roll_speed = zoo::na.locf(roll_speed, na.rm = FALSE, maxgap = t_unit_window),
-           move_break = ifelse(circvar >= circvar_threshold & roll_speed <= 2, 1, 0),
-           rw_num = row_number()) %>%
-    select(-c(a_rad:res_length, roll_speed))
 
   if (sum(d_break$move_break, na.rm = TRUE) > 0) {
     d_places <- places(d_break)
@@ -92,9 +106,9 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
       place_lapse() %>%
       place_lapse_dist()
 
-    if (max(d_places$place_grp, na.rm = TRUE) > 1) {
+    if (!is.null(pl_dist_threshold) & max(d_places$place_grp, na.rm = TRUE) > 1) {
       d_places <- d_places %>%
-        mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < 100, zoo::na.locf(place_grp, na.rm = FALSE),
+        mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold, zoo::na.locf(place_grp, na.rm = FALSE),
           place_grp
         ))
     }
@@ -131,5 +145,9 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
       cluster_grp = NA
     )
   }
+
+  d_clusters <- d_clusters %>%
+    dplyr::mutate(activity_status = dplyr::case_when(!is.na(cluster_grp) ~ 'static',
+                                                     is.na(cluster_grp) & !is.na(lat) ~ 'mobile'))
   d_clusters
 }

@@ -1,7 +1,20 @@
 
 ### INTERNAL CIRCULARIZE FUNCTIONS
 
-# `ufp_places` defines/assigns numeric category to places identified by the
+# `rspeed_mintute` calculates the speed within a rolling 1 minute window
+# Parameter used to in conjunction with circular variance to detect clustering if
+# 'rspeed_threshold' is defined.
+
+rspeed_minute <- function(x, rs_window) {
+
+  if (sum(is.na(x)) > 0) {
+    zoo::rollmedian(x, rs_window, na.rm = TRUE, fill = NA, align = "center")
+  } else {
+    zoo::rollmedian(x, rs_window, fill = NA, align = "center")
+  }
+}
+
+# `places` defines/assigns numeric category to places identified by the
 # circular variance algorithm
 
 places <- function(df) {
@@ -18,7 +31,7 @@ places <- function(df) {
   d_places <- suppressMessages(full_join(df, d_places))
 }
 
-# `ufp_lapse` identifies lapses between places
+# `place_lapse` identifies lapses between places
 
 place_lapse <- function(df) {
   rm_open_na_cluster <- df %>%
@@ -56,8 +69,8 @@ place_lapse_dist <- function(df) {
     select(place_grp, lat, lon) %>%
     group_by(place_grp) %>%
     summarise(
-      mlat = mean(lat),
-      mlon = mean(lon)
+      mlat = median(lat),
+      mlon = median(lon)
     )
 
   if (nrow(p_lapse_grps) > 1) {
@@ -84,7 +97,7 @@ place_lapse_dist <- function(df) {
   }
 }
 
-# `ufp_cluster` aggregates places identified by the circular variance algorithm
+# `cluster` aggregates places identified by the circular variance algorithm
 # into larger clusters. If the number of obs in a cluster is below the
 # 'cluster_threshold', those observations are retained, but unclustered.
 # Clusters are reordered if any observations are unclustered.
@@ -104,7 +117,7 @@ cluster <- function(df, cluster_threshold = NULL) {
 
   if (!is.null(cluster_threshold)) {
     if (!is.numeric(cluster_threshold)) {
-      stop("Invalid 'type' of argument 'cluster_threshold.' Expecting a numeric value.", call. = FALSE)
+      stop("Invalid 'type' of argument assigned to 'cluster_threshold.' Expecting a numeric value.", call. = FALSE)
     }
 
     dc <- clust_join %>%

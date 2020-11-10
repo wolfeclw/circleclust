@@ -9,26 +9,37 @@ circleclust(
   dt_field = NULL,
   circvar_threshold = 0.7,
   window = 60,
-  cluster_threshold = NULL,
-  show_circvar = FALSE
+  show_circvar = FALSE,
+  rspeed_threshold = NULL,
+  pl_dist_threshold = NULL,
+  cluster_threshold = NULL
 )
 }
 \arguments{
 \item{df}{a data frame with columns \code{speed} and \code{azimuth} created by \code{move()}.
 The data frame must also include datetime, longitude, and latitude colums.}
 
-\item{circvar_threshold}{numeric; Circular variance threshold to determine clustering.
+\item{circvar_threshold}{numeric; circular variance threshold to determine clustering.
 Default = 0.7.}
 
-\item{window}{numeric; Window (number of rows) in which to calculate circular variance.}
-
-\item{cluster_threshold}{numeric; The minimum allowable number of observations
-in each cluster.  If the number of observations in an identified cluster is less than this threshold,
-the observations are retained but not assigned a cluster value.}
+\item{window}{numeric; window (number of rows) in which to calculate circular variance.}
 
 \item{show_circvar}{logical; if \code{TRUE}, a column will be added to the output data
 frame listing the circular variance (\code{circvar}) for each observation.
 Default = \code{FALSE}.}
+
+\item{rspeed_threshold}{numeric; if assigned a numeric value, the 1-minute rolling
+median speed (m/s) is calculated. Observations with a circular variance above
+'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster.}
+
+\item{pl_dist_threshold}{numeric; distance threshold (meters) used to aggregate
+clusters. If the distance between consecutive clusters is below this threshold,
+each cluster, and the coordinates between them, are combined into a single
+grouping of coordinates.}
+
+\item{cluster_threshold}{numeric; the minimum allowable number of observations
+in each cluster.  If the number of observations in an identified cluster is less than this threshold,
+the observations are retained but not assigned a to a cluster.}
 }
 \value{
 a tibble.
@@ -42,15 +53,18 @@ to identify clustering, and the minimum number of observations allowed in a
 cluster.
 }
 \details{
+Observations belonging to a cluster are assigned to a cluster group (\code{cluster_grp}),
+which are ordered temporally. Further, observations are marked as either
+static or mobile (\code{activity_status}).
+
 Imputing lon/lat values using \code{impute_coords()} is recommended if GPS
 coordinates are missing.
 }
 \examples{
 \dontrun{
 
-circleclust(df,
-  circvar_threshold = .7, window = 60, cluster_threshold = NULL,
-  show_circvar = FALSE
-)
+circleclust(df, circvar_threshold = .7, window = 60, cluster_threshold = NULL,
+  show_circvar = FALSE, rspeed_threshold = NULL,
+  pl_dist_threshold = NULL,  cluster_threshold = NULL)
 }
 }
