@@ -44,7 +44,7 @@ impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00001,
                                        is.numeric))
 
   d_imputed <- if (sum(!is.na(df$lat)) == nrow(df) | sum(!is.na(df$lat)) == 0) {
-    df %>% mutate(imputed_coord = 0)
+    df %>% dplyr::mutate(imputed_coord = 0)
   } else if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
     stop(paste('To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,',
                'and `open_lapse_lenth`.', sep = '\n'),
