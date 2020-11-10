@@ -19,42 +19,42 @@ rspeed_minute <- function(x, rs_window) {
 
 places <- function(df) {
   d_places <- df %>%
-    filter(move_break == 1) %>%
-    mutate(
-      lag_rownum = lag(rw_num),
-      rw_diff = rw_num - lag_rownum,
+    dplyr::filter(move_break == 1) %>%
+    dplyr::mutate(
+      lag_rownum = lag(r),
+      rw_diff = r - lag_rownum,
       place_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
       place_grp = cumsum(place_break)
     ) %>%
-    select(-c(move_break, lag_rownum, rw_diff, place_break))
+    dplyr::select(-c(move_break, lag_rownum, rw_diff, place_break))
 
-  d_places <- suppressMessages(full_join(df, d_places))
+  d_places <- suppressMessages(dplyr::full_join(df, d_places))
 }
 
 # `place_lapse` identifies lapses between places
 
 place_lapse <- function(df) {
   rm_open_na_cluster <- df %>%
-    filter(
+    dplyr::filter(
       cumsum(clustered_coord) != 0,
       rev(cumsum(rev(clustered_coord)) != 0)
     )
 
   if (nrow(rm_open_na_cluster) > 0) {
     d_place_lapse <- rm_open_na_cluster %>%
-      mutate(place_lapse = ifelse(clustered_coord == 0, 1, 0)) %>%
-      filter(place_lapse == 1)
+      dplyr::mutate(place_lapse = ifelse(clustered_coord == 0, 1, 0)) %>%
+      dplyr::filter(place_lapse == 1)
 
     d_place_lapse <- d_place_lapse %>%
-      mutate(
-        lag_rownum = lag(rw_num),
-        rw_diff = rw_num - lag_rownum,
+      dplyr::mutate(
+        lag_rownum = lag(r),
+        rw_diff = r - lag_rownum,
         break_yn = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
         place_lapse_grp = cumsum(break_yn)
       ) %>%
-      select(-c(place_lapse, lag_rownum, rw_diff, break_yn))
+      dplyr::select(-c(place_lapse, lag_rownum, rw_diff, break_yn))
 
-    c_lapse_join <- suppressMessages(full_join(df, d_place_lapse))
+    c_lapse_join <- suppressMessages(dplyr::full_join(df, d_place_lapse))
   }
 }
 
@@ -63,12 +63,12 @@ place_lapse <- function(df) {
 
 place_lapse_dist <- function(df) {
   p_lapse_grps <- df %>%
-    filter(!is.na(place_grp))
+    dplyr::filter(!is.na(place_grp))
 
   p_lapse_grps <- p_lapse_grps %>%
-    select(place_grp, lat, lon) %>%
-    group_by(place_grp) %>%
-    summarise(
+    dplyr::select(place_grp, lat, lon) %>%
+    dplyr::group_by(place_grp) %>%
+    dplyr::summarise(
       mlat = median(lat),
       mlon = median(lon)
     )
@@ -82,18 +82,18 @@ place_lapse_dist <- function(df) {
 
     p_dist <- sf::st_distance(p_lapse1, p_lapse2, by_element = TRUE) %>%
       tibble::enframe(name = NULL) %>%
-      mutate(
+      dplyr::mutate(
         place_lapse_grp = 1:nrow(.),
         pl_distance = as.numeric(round(value, digits = 3))
       ) %>%
-      select(
+      dplyr::select(
         place_lapse_grp,
         pl_distance
       )
 
-    p_dist_join <- suppressMessages(full_join(df, p_dist))
+    p_dist_join <- suppressMessages(dplyr::full_join(df, p_dist))
   } else {
-    df %>% mutate(pl_distance = NA)
+    df %>% dplyr::mutate(pl_distance = NA)
   }
 }
 
@@ -104,16 +104,16 @@ place_lapse_dist <- function(df) {
 
 cluster <- function(df, cluster_threshold = NULL) {
   d_places <- df %>%
-    filter(!is.na(place_grp)) %>%
-    mutate(
-      lag_rownum = lag(rw_num),
-      rw_diff = rw_num - lag_rownum,
+    dplyr::filter(!is.na(place_grp)) %>%
+    dplyr::mutate(
+      lag_rownum = lag(r),
+      rw_diff = r - lag_rownum,
       clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
       cluster_grp = cumsum(clust_break)
     ) %>%
-    select(-c(clust_break, lag_rownum, rw_diff, clust_break))
+    dplyr::select(-c(clust_break, lag_rownum, rw_diff, clust_break))
 
-  clust_join <- suppressMessages(full_join(df, d_places))
+  clust_join <- suppressMessages(dplyr::full_join(df, d_places))
 
   if (!is.null(cluster_threshold)) {
     if (!is.numeric(cluster_threshold)) {
@@ -121,19 +121,20 @@ cluster <- function(df, cluster_threshold = NULL) {
     }
 
     dc <- clust_join %>%
-      group_by(cluster_grp) %>%
-      mutate(cluster_nrow = ifelse(is.na(cluster_grp), NA, n())) %>%
-      ungroup()
+      dplyr::group_by(cluster_grp) %>%
+      dplyr::mutate(cluster_nrow = ifelse(is.na(cluster_grp), NA, dplyr::n())) %>%
+      dplyr::ungroup()
 
     clust_n <- dc %>%
-      group_by(cluster_nrow) %>%
-      summarise(n_max = max(cluster_nrow)) %>%
+      dplyr::group_by(cluster_nrow) %>%
+      dplyr::summarise(n_max = max(cluster_nrow)) %>%
       tidyr::drop_na() %>%
       .$n_max
 
     rm_clust <- sum(clust_n < cluster_threshold)
 
-    d_clust <- dc %>% select(-c(move_break, rw_num, place_grp, place_lapse_grp, pl_distance, cluster_nrow))
+    d_clust <- dc %>% dplyr::select(-c(move_break, r, place_grp,
+                                       place_lapse_grp, pl_distance, cluster_nrow))
 
     if (rm_clust > 0) {
 
@@ -142,18 +143,18 @@ cluster <- function(df, cluster_threshold = NULL) {
       dc_rm <- dc[, !grepl("cluster_grp", colnames(dc))]
 
       reorder_clust <- dc_rm %>%
-        filter(!is.na(place_grp)) %>%
-        mutate(
-          lag_rownum = lag(rw_num),
-          rw_diff = rw_num - lag_rownum,
+        dplyr::filter(!is.na(place_grp)) %>%
+        dplyr::mutate(
+          lag_rownum = lag(r),
+          rw_diff = r - lag_rownum,
           clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
           cluster_grp = cumsum(clust_break)
         ) %>%
-        select(-c(clust_break, lag_rownum, rw_diff, clust_break))
+        dplyr::select(-c(clust_break, lag_rownum, rw_diff, clust_break))
 
-      d_clust <- suppressMessages(full_join(dc_rm, reorder_clust))
+      d_clust <- suppressMessages(dplyr::full_join(dc_rm, reorder_clust))
       d_clust <- d_clust %>%
-        select(-c(move_break, rw_num, place_lapse_grp, place_grp, clustered_coord, pl_distance, cluster_nrow))
+        dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance, cluster_nrow))
 
       message(paste(
         "A total of", rm_clust,
@@ -163,7 +164,7 @@ cluster <- function(df, cluster_threshold = NULL) {
     }
   } else {
     d_clust <- clust_join %>%
-      select(-c(move_break, rw_num, place_lapse_grp, place_grp, clustered_coord, pl_distance))
+      dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance))
   }
   d_clust
 }

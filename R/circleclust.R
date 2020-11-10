@@ -26,11 +26,14 @@
 #' Default = `FALSE`.
 #' @param rspeed_threshold numeric; if assigned a numeric value, the 1-minute rolling
 #' median speed (m/s) is calculated. Observations with a circular variance above
-#' 'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster.
+#' 'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster. Assigning
+#' a value to this parameter can mitigate incidental clustering of coordinates due
+#' to stop-and-go transit.
 #' @param pl_dist_threshold numeric; distance threshold (meters) used to aggregate
 #' clusters. If the distance between consecutive clusters is below this threshold,
 #' each cluster, and the coordinates between them, are combined into a single
-#' grouping of coordinates.
+#' grouping of coordinates. Setting this parameter may be useful if location data
+#' includes transit at a low speed with frequent stops (i.e. walking).
 #' @param cluster_threshold numeric; the minimum allowable number of observations
 #' in each cluster.  If the number of observations in an identified cluster is less than this threshold,
 #' the observations are retained but not assigned a to a cluster.
@@ -82,18 +85,18 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
 
   if (is.null(rspeed_threshold)) {
     d_break <- d_variance %>%
-      mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
-             rw_num = row_number())
+      dplyr::mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
+             r = dplyr::row_number())
     # %>%
     #   select(-c(a_rad:res_length))
   } else if (is.numeric(rspeed_threshold)) {
 
     d_break <- d_variance %>%
-      mutate(roll_speed = rspeed_minute(speed_ms, t_unit_window),
+      dplyr::mutate(roll_speed = rspeed_minute(speed_ms, t_unit_window),
              roll_speed = zoo::na.locf(roll_speed, na.rm = FALSE, maxgap = t_unit_window),
              move_break = ifelse(circvar >= circvar_threshold & roll_speed <= rspeed_threshold, 1, 0),
-             rw_num = row_number()) %>%
-      select(-c(a_rad:res_length, roll_speed))
+             r = dplyr::row_number()) %>%
+      dplyr::select(-c(a_rad:res_length, roll_speed))
   } else {
     stop('`rspeed_threshold` must be numeric or set to NULL', call. = FALSE)
   }
@@ -108,7 +111,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
 
     if (!is.null(pl_dist_threshold) & max(d_places$place_grp, na.rm = TRUE) > 1) {
       d_places <- d_places %>%
-        mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold, zoo::na.locf(place_grp, na.rm = FALSE),
+        dplyr::mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold, zoo::na.locf(place_grp, na.rm = FALSE),
           place_grp
         ))
     }
@@ -121,8 +124,8 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     }
   } else if (sum(!is.na(df$lat) > 0) & sum(d_break$move_break, na.rm = TRUE) == 0) {
     d_clusters <- d_break %>%
-      select(-c(move_break, rw_num)) %>%
-      mutate(cluster_grp = NA)
+      dplyr::select(-c(move_break, r)) %>%
+      dplyr::mutate(cluster_grp = NA)
     message(paste0(
       "NO CLUSTERS IDENTIFIED - the individual may have been in transit",
       "\n for the duration of the sampling session."
@@ -138,9 +141,9 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   if (show_circvar == TRUE & sum(is.na(df$lat)) != nrow(df)) {
     d_clusters <- d_clusters
   } else if (show_circvar == FALSE & sum(is.na(df$lat)) != nrow(df)) {
-    d_clusters <- d_clusters %>% select(-circvar)
+    d_clusters <- d_clusters %>% dplyr::select(-circvar)
   } else if (sum(is.na(df$lat)) == nrow(df)) {
-    d_clusters <- d_clusters %>% mutate(
+    d_clusters <- d_clusters %>% dplyr::mutate(
       circvar = NA,
       cluster_grp = NA
     )

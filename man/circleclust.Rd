@@ -30,12 +30,15 @@ Default = \code{FALSE}.}
 
 \item{rspeed_threshold}{numeric; if assigned a numeric value, the 1-minute rolling
 median speed (m/s) is calculated. Observations with a circular variance above
-'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster.}
+'circvar_threshold' and below 'rspeed_threshold' are assigned to a cluster. Assigning
+a value to this parameter can mitigate incidental clustering of coordinates due
+to stop-and-go transit.}
 
 \item{pl_dist_threshold}{numeric; distance threshold (meters) used to aggregate
 clusters. If the distance between consecutive clusters is below this threshold,
 each cluster, and the coordinates between them, are combined into a single
-grouping of coordinates.}
+grouping of coordinates. Setting this parameter may be useful if location data
+includes transit at a low speed with frequent stops (i.e. walking).}
 
 \item{cluster_threshold}{numeric; the minimum allowable number of observations
 in each cluster.  If the number of observations in an identified cluster is less than this threshold,
