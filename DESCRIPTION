@@ -16,3 +16,19 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat
 Config/testthat/edition: 3
+Imports: 
+    sf,
+    dplyr,
+    purrr,
+    magrittr,
+    chron,
+    circular,
+    geosphere,
+    lubridate,
+    mapdeck,
+    readr,
+    scales,
+    stringr,
+    tibble,
+    tidyr,
+    zoo

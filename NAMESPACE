@@ -2,10 +2,11 @@
 
 export("%>%")
 export(circleclust)
+export(cluster_deck)
 export(dt_aggregate)
 export(impute_coords)
 export(move)
+export(read_columbus)
 export(wgs_sf)
-import(lwgeom)
 importFrom(magrittr,"%>%")
 importFrom(stats,median)

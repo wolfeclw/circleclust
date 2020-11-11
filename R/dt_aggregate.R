@@ -1,16 +1,19 @@
 
-#' Aggregate PUFP data
+#' Aggregate data by time unit
 #'
 #' `dt_aggregate()` aggregates numeric values to a specified time unit. Columns with
-#' unique character values are retained (i.e. patient ID, sensor name).
+#' uniform character values are retained (i.e. patient ID, sensor name).
 #'
 #' @param df a data frame with a datetime field.
-#' @param dt_field character; name of datetime field.
+#' @param dt_field POSIXct; name of datetime field.
 #' @param unit character; string specifying a time unit or a multiple of a unit to be rounded
 #' @param floor_or_celiling character; either 'floor'(\code{\link[lubridate]{floor_date}})
 #' or 'ceiling'(\code{\link[lubridate]{ceiling_date}}). Default = 'floor.'
 #' @param summary_fun character; summary function (i.e. 'mean', 'median'). Default = 'median.'
-#' @return a tibble
+#' @param na_rm_agg logical; should NA values be removed before the chosen
+#' `summary_fun` computes?
+#'
+#' @return a data frame aggregated by the specified time unit.
 #' @export
 #'
 #' @examples
@@ -18,12 +21,12 @@
 #'
 #' dt_aggregate(df, dt_field = 'Date_Time',
 #'   unit = "5 seconds", floor_or_ceiling = "floor",
-#'   summary_fun = "median"
+#'   summary_fun = "median", na_rm_agg = TRUE
 #' )
 #' }
 #' @importFrom stats median
 dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celiling = "floor",
-                          summary_fun = "median") {
+                          summary_fun = "median", na_rm_agg = TRUE) {
 
   if (is.null(dt_field)) {
     stop('`dt_field` has not been assigned a value.', call. = FALSE)
@@ -37,7 +40,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     d_agg <- df %>%
       dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
       dplyr::group_by(agg_dt) %>%
-      dplyr::summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
+      dplyr::summarise_if(is.numeric, summary_fun, na.rm = na_rm_agg) %>%
       dplyr::rename('{{dt_field}}' := agg_dt)
 
     n <- gsub('["]', '', names(d_agg))
@@ -47,7 +50,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     d_agg <- df %>%
       dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
       dplyr::group_by(agg_dt) %>%
-      dplyr::summarise_if(is.numeric, summary_fun, na.rm = TRUE) %>%
+      dplyr::summarise_if(is.numeric, summary_fun, na.rm = na_rm_agg) %>%
       dplyr::rename('{{dt_field}}' := agg_dt)
 
     n <- gsub('["]', '', names(d_agg))

@@ -9,15 +9,16 @@
 #' to identify clustering, and the minimum number of observations allowed in a
 #' cluster.
 #'
-#' Observations belonging to a cluster are assigned to a cluster group (`cluster_grp`),
+#' Observations belonging to a cluster are assigned to a cluster group,
 #' which are ordered temporally. Further, observations are marked as either
-#' static or mobile (`activity_status`).
+#' static or mobile.
 #'
 #' Imputing lon/lat values using `impute_coords()` is recommended if GPS
 #' coordinates are missing.
 #'
 #' @param df a data frame with columns `speed` and `azimuth` created by `move()`.
-#' The data frame must also include datetime, longitude, and latitude colums.
+#' The data frame must also include datetime, longitude, and latitude columns.
+#' @param dt_field POSIXct; name of datetime field.
 #' @param circvar_threshold numeric; circular variance threshold to determine clustering.
 #' Default = 0.7.
 #' @param window numeric; window (number of rows) in which to calculate circular variance.
@@ -39,14 +40,15 @@
 #' the observations are retained but not assigned a to a cluster.
 #'
 #'
-#' @return a tibble.
+#' @return a data frame. New columns `cluster_grp` and `activity_status` are appended
+#' to the input data frame.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #'
-#' circleclust(df, circvar_threshold = .7, window = 60, cluster_threshold = NULL,
-#'   show_circvar = FALSE, rspeed_threshold = NULL,
+#' circleclust(df, dt_field = NULL, circvar_threshold = .7, window = 60,
+#' cluster_threshold = NULL, show_circvar = FALSE, rspeed_threshold = NULL,
 #'   pl_dist_threshold = NULL,  cluster_threshold = NULL)
 #' }
 circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60,
@@ -56,6 +58,14 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     stop("Column 'azimuth' not found.  Use `move()` to calculate the azimuth",
       call. = FALSE
     )
+  }
+
+  if (is.null(dt_field)) {
+    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+  } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
+    c_dt_field <- class(df[[dt_field]])
+    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
+         call. = FALSE)
   }
 
   time_unit <- floor(median(diff(df[[dt_field]])))
@@ -86,9 +96,8 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   if (is.null(rspeed_threshold)) {
     d_break <- d_variance %>%
       dplyr::mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
-             r = dplyr::row_number())
-    # %>%
-    #   select(-c(a_rad:res_length))
+             r = dplyr::row_number())%>%
+      select(-c(a_rad:res_length))
   } else if (is.numeric(rspeed_threshold)) {
 
     d_break <- d_variance %>%

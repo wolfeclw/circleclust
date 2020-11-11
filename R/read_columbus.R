@@ -1,5 +1,22 @@
 
-gps_read <- function(path, tzone_gps = 'UTC', tzone_out = NULL) {
+#' Read Columbus gps logger .csv file
+#'
+#'`read_columbus()` imports latitude and longitude from a Columbus gps logger file.
+#'
+#' @param path string; filepath of input .csv
+#' @param tzone_gps character; time zone of the Columbus logger. Default = 'UTC'
+#' @param tzone_out character; time zone of the output file. Default = 'America/New_York.'
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'
+#' read_columbus(path, tzone_gps = 'UTC', tzone_out = 'America/New_York.'
+#' )
+#' }
+read_columbus <- function(path, tzone_gps = 'UTC', tzone_out = 'America/New_York.') {
   d <- suppressWarnings(readr::read_csv(path, skip = 1, col_names = FALSE,
                                         col_types  = readr::cols(.default = readr::col_number(),
                                                                  X2 = readr::col_character(),

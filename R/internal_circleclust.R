@@ -21,7 +21,7 @@ places <- function(df) {
   d_places <- df %>%
     dplyr::filter(move_break == 1) %>%
     dplyr::mutate(
-      lag_rownum = lag(r),
+      lag_rownum = dplyr::lag(r),
       rw_diff = r - lag_rownum,
       place_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
       place_grp = cumsum(place_break)
@@ -47,7 +47,7 @@ place_lapse <- function(df) {
 
     d_place_lapse <- d_place_lapse %>%
       dplyr::mutate(
-        lag_rownum = lag(r),
+        lag_rownum = dplyr::lag(r),
         rw_diff = r - lag_rownum,
         break_yn = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
         place_lapse_grp = cumsum(break_yn)
@@ -106,7 +106,7 @@ cluster <- function(df, cluster_threshold = NULL) {
   d_places <- df %>%
     dplyr::filter(!is.na(place_grp)) %>%
     dplyr::mutate(
-      lag_rownum = lag(r),
+      lag_rownum = dplyr::lag(r),
       rw_diff = r - lag_rownum,
       clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
       cluster_grp = cumsum(clust_break)
@@ -145,7 +145,7 @@ cluster <- function(df, cluster_threshold = NULL) {
       reorder_clust <- dc_rm %>%
         dplyr::filter(!is.na(place_grp)) %>%
         dplyr::mutate(
-          lag_rownum = lag(r),
+          lag_rownum = dplyr::lag(r),
           rw_diff = r - lag_rownum,
           clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
           cluster_grp = cumsum(clust_break)

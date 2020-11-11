@@ -1,13 +1,11 @@
 
 #' Create `sf` Object
 #'
-#' Creates a multipoint sf object from a PUFP data frame created by `ufp_read()`
-#' or `ufp_batch_read()`. Points are projected using WGS84 (crs = 4326).
+#' Creates a multipoint `sf` object. Points are projected using WGS84 (crs = 4326).
 #'
-#' @param df data frame created by `ufp_read() `or `ufp_batch_read()`.  The input
-#' data frame must include lon/lat coordinates.
+#' @param df a data frame with columns for latitude (`lat`) and longitude (`lon`).
 #'
-#' @return a `MULTIPOINT` object
+#' @return a `POINT` object.
 #' @export
 #'
 #' @examples
@@ -15,7 +13,6 @@
 #'
 #' ufp_sf(df)
 #' }
-#' @import lwgeom
 wgs_sf <- function(df) {
 
   if (sum(stringr::str_detect(names(df), "lon|lat")) < 1) {
@@ -28,7 +25,7 @@ wgs_sf <- function(df) {
 
   d_coords <- dplyr::filter(df, !is.na(lat))
   d_coords_sf <- suppressWarnings(sf::st_as_sf(d_coords, coords = c("lon", "lat"), crs = 4326))
-  d_join <- suppressMessages(full_join(df, d_coords_sf))
+  d_join <- suppressMessages(dplyr::full_join(df, d_coords_sf))
   df_sf <- sf::st_as_sf(d_join, crs = 4326)
   sf_empty_rows <- sum(sf::st_is_empty(df_sf))
   pct_empty <- round(sf_empty_rows / nrow(df_sf), digits = 2)

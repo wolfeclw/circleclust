@@ -7,15 +7,13 @@
 wgs_sf(df)
 }
 \arguments{
-\item{df}{data frame created by \code{ufp_read() }or \code{ufp_batch_read()}.  The input
-data frame must include lon/lat coordinates.}
+\item{df}{a data frame with columns for latitude (\code{lat}) and longitude (\code{lon}).}
 }
 \value{
-a \code{MULTIPOINT} object
+a \code{POINT} object.
 }
 \description{
-Creates a multipoint sf object from a PUFP data frame created by \code{ufp_read()}
-or \code{ufp_batch_read()}. Points are projected using WGS84 (crs = 4326).
+Creates a multipoint \code{sf} object. Points are projected using WGS84 (crs = 4326).
 }
 \examples{
 \dontrun{

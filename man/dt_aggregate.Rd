@@ -2,20 +2,21 @@
 % Please edit documentation in R/dt_aggregate.R
 \name{dt_aggregate}
 \alias{dt_aggregate}
-\title{Aggregate PUFP data}
+\title{Aggregate data by time unit}
 \usage{
 dt_aggregate(
   df,
   dt_field = NULL,
   unit = "5 seconds",
   floor_or_celiling = "floor",
-  summary_fun = "median"
+  summary_fun = "median",
+  na_rm_agg = TRUE
 )
 }
 \arguments{
 \item{df}{a data frame with a datetime field.}
 
-\item{dt_field}{character; name of datetime field.}
+\item{dt_field}{POSIXct; name of datetime field.}
 
 \item{unit}{character; string specifying a time unit or a multiple of a unit to be rounded}
 
@@ -23,20 +24,23 @@ dt_aggregate(
 or 'ceiling'(\code{\link[lubridate]{ceiling_date}}). Default = 'floor.'}
 
 \item{summary_fun}{character; summary function (i.e. 'mean', 'median'). Default = 'median.'}
+
+\item{na_rm_agg}{logical; should NA values be removed before the chosen
+\code{summary_fun} computes?}
 }
 \value{
-a tibble
+a data frame aggregated by the specified time unit.
 }
 \description{
 \code{dt_aggregate()} aggregates numeric values to a specified time unit. Columns with
-unique character values are retained (i.e. patient ID, sensor name).
+uniform character values are retained (i.e. patient ID, sensor name).
 }
 \examples{
 \dontrun{
 
 dt_aggregate(df, dt_field = 'Date_Time',
   unit = "5 seconds", floor_or_ceiling = "floor",
-  summary_fun = "median"
+  summary_fun = "median", na_rm_agg = TRUE
 )
 }
 }
