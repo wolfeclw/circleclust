@@ -8,7 +8,6 @@ Circular or [directional statistics](https://en.wikipedia.org/wiki/Directional_s
 
 ![](zoo_deck.gif)
 
-![](hc_zoo.gif)
 
 ## Installation
 
