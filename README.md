@@ -6,6 +6,10 @@ Circular or [directional statistics](https://en.wikipedia.org/wiki/Directional_s
 
 `circleclust` also includes functions to aggregate data by time unit, impute missing location data, and spatial functions to transform and visualize clustered data.
 
+![](zoo_deck.gif)
+
+![](hc_zoo.gif)
+
 ## Installation
 
 To install `circleclust`, use the following code:
