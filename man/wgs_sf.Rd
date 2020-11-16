@@ -14,6 +14,7 @@ a \code{POINT} object.
 }
 \description{
 Creates a multipoint \code{sf} object. Points are projected using WGS84 (crs = 4326).
+Missing coordinates are allowed, but given an empty geometry.
 }
 \examples{
 \dontrun{

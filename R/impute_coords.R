@@ -35,7 +35,7 @@
 #'   speed_threshold = NULL, speed_window = NULL, open_lapse_length = NULL
 #' )
 #' }
-impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00001, show_lapse_distance = FALSE,
+impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00005, show_lapse_distance = FALSE,
                        fill_open_lapses = FALSE, speed_threshold = NULL, speed_window = NULL,
                        open_lapse_length = NULL) {
 

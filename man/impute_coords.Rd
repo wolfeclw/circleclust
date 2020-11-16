@@ -7,7 +7,7 @@
 impute_coords(
   df,
   distance_threshold = 100,
-  jitter_amount = 1e-05,
+  jitter_amount = 5e-05,
   show_lapse_distance = FALSE,
   fill_open_lapses = FALSE,
   speed_threshold = NULL,

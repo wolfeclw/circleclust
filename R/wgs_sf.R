@@ -2,6 +2,7 @@
 #' Create `sf` Object
 #'
 #' Creates a multipoint `sf` object. Points are projected using WGS84 (crs = 4326).
+#' Missing coordinates are allowed, but given an empty geometry.
 #'
 #' @param df a data frame with columns for latitude (`lat`) and longitude (`lon`).
 #'

@@ -97,7 +97,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     d_break <- d_variance %>%
       dplyr::mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
              r = dplyr::row_number())%>%
-      select(-c(a_rad:res_length))
+      dplyr::select(-c(a_rad:res_length))
   } else if (is.numeric(rspeed_threshold)) {
 
     d_break <- d_variance %>%
