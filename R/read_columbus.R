@@ -16,7 +16,7 @@
 #' read_columbus(path, tzone_gps = 'UTC', tzone_out = 'America/New_York.'
 #' )
 #' }
-read_columbus <- function(path, tzone_gps = 'UTC', tzone_out = 'America/New_York.') {
+read_columbus <- function(path, tzone_gps = 'UTC', tzone_out = 'America/New_York') {
   d <- suppressWarnings(readr::read_csv(path, skip = 1, col_names = FALSE,
                                         col_types  = readr::cols(.default = readr::col_number(),
                                                                  X2 = readr::col_character(),

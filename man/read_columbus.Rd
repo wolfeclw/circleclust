@@ -4,7 +4,7 @@
 \alias{read_columbus}
 \title{Read Columbus gps logger .csv file}
 \usage{
-read_columbus(path, tzone_gps = "UTC", tzone_out = "America/New_York.")
+read_columbus(path, tzone_gps = "UTC", tzone_out = "America/New_York")
 }
 \arguments{
 \item{path}{string; filepath of input .csv}
