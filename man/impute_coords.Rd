@@ -6,6 +6,7 @@
 \usage{
 impute_coords(
   df,
+  dt_field = NULL,
   distance_threshold = 100,
   jitter_amount = 5e-05,
   show_lapse_distance = FALSE,
@@ -18,13 +19,15 @@ impute_coords(
 \arguments{
 \item{df}{data frame containing latitude (\code{lat}) and longitude (\code{lon})}
 
+\item{dt_field}{POSIXct; name of datetime field.}
+
 \item{distance_threshold}{numeric; distance (meters) between the last known coordinates before
 GPS signal loss and the first known coordinates following signal loss are compared to
 this value.  If the distance exceeds this threshold, coordinates are not
 imputed. Default = 100 meters.}
 
 \item{jitter_amount}{numeric; amount of jitter to apply to imputed coords.
-Default = 0.00001 decimal degrees. See \code{\link[sf]{st_jitter}}.}
+Default = 0.00005 decimal degrees. See \code{\link[sf]{st_jitter}}.}
 
 \item{show_lapse_distance}{logical; if \code{TRUE}, a column will be added to the output data frame
 listing the distance between the last and first know coordinates for each lapse in

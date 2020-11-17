@@ -34,7 +34,7 @@ move <- function(df, dt_field = NULL) {
 
   d_speed <- df %>%
     dplyr::filter(!duplicated(.data[[dt_field]])) %>%
-    dplyr::arrange(.data[[dt_field]]) # arrange by Date_Time just to be safe
+    dplyr::arrange(.data[[dt_field]]) # arrange by datetime field just to be safe
 
   d_speed <- d_speed %>%
     dplyr::mutate(

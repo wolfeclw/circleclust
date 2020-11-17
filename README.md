@@ -8,15 +8,11 @@ The `circleclust()` algorithm classifies coordinates into distinct spatiotempora
 
 The algorithm calculates the circular variance within a moving window and classifies coordinates as either 'static' or 'mobile' based on departures from a threshold value.  The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens.  Purple dots represent periods of mobile activity and yellow dots represent periods of static activity.
 
-\
 ![](./docs/zoo_deck.gif)
 
-\
 Plotting the bearing (azimuth) between sequential points gives an under the hood look at how the algorithm classifies coordinates. We see a higher degree of variability in the bearings classified as 'static', while the purple 'mobile' bearings demonstrate a consistent trajectory.
 
-\
 ![](./docs/hc_zoo.png)
-
 
 #### A typical workflow looks something like this:
 
@@ -29,7 +25,7 @@ Plotting the bearing (azimuth) between sequential points gives an under the hood
   
 ``` r
 d_clusters <- zoo_trip %>% 
-  impute_coords('Date_Time', jitter_amount = .00005) %>%
+  impute_coords('Date_Time') %>%
   dt_aggregate('Date_Time') %>%
   move('Date_Time') %>%
   circleclust('Date_Time', pl_dist_threshold = 25, show_circvar = TRUE)

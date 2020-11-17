@@ -4,12 +4,13 @@
 #' `impute_coords()` imputes missing lon/lat coordinates that occur during GPS lapses.
 #'
 #' @param df data frame containing latitude (`lat`) and longitude (`lon`)
+#' @param dt_field POSIXct; name of datetime field.
 #' @param distance_threshold numeric; distance (meters) between the last known coordinates before
 #' GPS signal loss and the first known coordinates following signal loss are compared to
 #' this value.  If the distance exceeds this threshold, coordinates are not
 #' imputed. Default = 100 meters.
 #' @param jitter_amount numeric; amount of jitter to apply to imputed coords.
-#' Default = 0.00001 decimal degrees. See \code{\link[sf]{st_jitter}}.
+#' Default = 0.00005 decimal degrees. See \code{\link[sf]{st_jitter}}.
 #' @param show_lapse_distance logical; if `TRUE`, a column will be added to the output data frame
 #' listing the distance between the last and first know coordinates for each lapse in
 #' GPS signal. Default = `FALSE`.
@@ -35,10 +36,20 @@
 #'   speed_threshold = NULL, speed_window = NULL, open_lapse_length = NULL
 #' )
 #' }
-impute_coords <- function(df, distance_threshold = 100, jitter_amount = 0.00005, show_lapse_distance = FALSE,
-                       fill_open_lapses = FALSE, speed_threshold = NULL, speed_window = NULL,
-                       open_lapse_length = NULL) {
+impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = 0.00005,
+                          show_lapse_distance = FALSE, fill_open_lapses = FALSE, speed_threshold = NULL,
+                          speed_window = NULL, open_lapse_length = NULL) {
 
+  if (is.null(dt_field)) {
+    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+  } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
+    c_dt_field <- class(df[[dt_field]])
+    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
+         call. = FALSE)
+  } else if (is.unsorted(df[[dt_field]])) {
+    stop(paste0('The input data frame should be sorted by ', {{dt_field}}, '.'),
+         call. = FALSE)
+  }
 
   open_parms_lgl <- sum(purrr::map_lgl(c(speed_threshold, speed_window, open_lapse_length),
                                        is.numeric))

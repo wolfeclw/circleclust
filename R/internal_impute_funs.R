@@ -1,8 +1,8 @@
 ##### INTERNAL IMPUTE FUNCTIONS
 
 
-impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = 0.00001,
-                               show_lapse_distance = FALSE) {
+impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = jitter_amount,
+                               show_lapse_distance = show_lapse_distance) {
   d_r <- df %>%
     dplyr::mutate(r = dplyr::row_number())
 
@@ -60,16 +60,16 @@ impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = 0.0
 
 
     if (min_dist > distance_threshold) {
-      warning(paste0(
+      message(paste0(
         "The minimum distance between missing coordinates (", min_dist,
-        ") meters is greater than the distance threshold. Lapses in GPS were not imputed."
+        ") meters is greater than the distance threshold. \n Some (or all) lapses in GPS signal were not imputed."
       ),
       call. = FALSE
       )
 
       d_dist_imputed <- d_dist %>%
         dplyr::select(-c(lapse_grp, r)) %>%
-        dplyr::mutate(imputed_coord = ifelse(!is.na(lat), 0, NA))
+        dplyr::mutate(imputed_coord = 0)
     } else {
       d_coords_fill <- d_dist %>%
         dplyr::mutate(
@@ -95,8 +95,7 @@ impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = 0.0
 
       d_dist_imputed <- jitter_join %>%
         dplyr::mutate(
-          imputed_coord = ifelse(!is.na(jlat), 1,
-            ifelse(is.na(jlat) & is.na(lat), NA, 0)
+          imputed_coord = ifelse(!is.na(jlat), 1, 0
           ),
           lat = ifelse(is.na(jlat), lat, jlat),
           lon = ifelse(is.na(jlon), lon, jlon)
