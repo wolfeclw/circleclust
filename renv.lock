@@ -417,10 +417,10 @@
     },
     "magrittr": {
       "Package": "magrittr",
-      "Version": "1.5",
+      "Version": "2.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "1bb58822a20301cee84a41678e25d9b7"
+      "Hash": "41287f1ac7d28a92f0a286ed507928d3"
     },
     "mapdeck": {
       "Package": "mapdeck",
@@ -616,6 +616,18 @@
       "Repository": "CRAN",
       "Hash": "33a5b27a03da82ac4b1d43268f80088a"
     },
+    "rticles": {
+      "Package": "rticles",
+      "Version": "0.17.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rticles",
+      "RemoteUsername": "rstudio",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "c42fc435c8d965725802503f02cee9e2bb6665bf",
+      "Hash": "c037bd5369fb766b07ad2508b4f974cd"
+    },
     "scales": {
       "Package": "scales",
       "Version": "1.1.1",
@@ -730,10 +742,15 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.27",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "264b4a31d35bb6833566a7763356ab63"
+      "Version": "0.27.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tinytex",
+      "RemoteUsername": "yihui",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "e1b43e503642bde86f00ec6428eb7f2e0faca566",
+      "Hash": "e7dd80eba7ab8f30aee7682a68c486ca"
     },
     "units": {
       "Package": "units",

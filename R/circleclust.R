@@ -13,6 +13,10 @@
 #' which are ordered temporally. Further, observations are marked as either
 #' static or mobile.
 #'
+#' The `circleclust()` function has been optimized to detect changes in activity
+#' pattern within a 5-minute moving window and a threshold circular variance of 0.7.
+#' These parameters can be adjusted if desired.
+#'
 #' Imputing lon/lat values using `impute_coords()` is recommended if GPS
 #' coordinates are missing.
 #'
@@ -48,8 +52,16 @@
 #' \dontrun{
 #'
 #' circleclust(df, dt_field = NULL, circvar_threshold = .7, window = 60,
-#' cluster_threshold = NULL, show_circvar = FALSE, rspeed_threshold = NULL,
+#'   cluster_threshold = NULL, show_circvar = FALSE, rspeed_threshold = NULL,
 #'   pl_dist_threshold = NULL,  cluster_threshold = NULL)
+#'
+#'
+#' zoo_trip %>%
+#'   impute_coords('Date_Time') %>%
+#'   dt_aggregate('Date_Time') %>%
+#'   move('Date_Time') %>%
+#'   circleclust('Date_Time', pl_dist_threshold = 25, show_circvar = TRUE)
+#'
 #' }
 circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60,
                         show_circvar = FALSE, rspeed_threshold = NULL,

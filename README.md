@@ -1,12 +1,12 @@
 # circleclust
 
-`circleclust` is a collection of functions that facilitate the analysis of personal location data to decipher patterns in mobility using circular or [directional statistics](https://en.wikipedia.org/wiki/Directional_statistics). Though circular statistics have been broadly applied across scientific disciplines, `circleclust` is most closely related to applications in movement ecology, or the movement of organisms.
+`circleclust` is a collection of functions that facilitate the analysis of personal location data to decipher patterns in mobility using circular or [directional statistics](https://en.wikipedia.org/wiki/Directional_statistics). 
 
-The `circleclust()` algorithm classifies coordinates into distinct spatiotemporal clusters based on circular variance, or the variability in the bearing between sequential points or [dihedral angles](https://en.wikipedia.org/wiki/Dihedral_angle).
+The `circleclust()` function classifies coordinates into distinct spatiotemporal clusters based on circular variance, or the variability in the bearing between sequential points or [dihedral angles](https://en.wikipedia.org/wiki/Dihedral_angle). The underlying algorithm calculates circular variance within a moving window and classifies coordinates as either 'static' or 'mobile' based on departures from a threshold value.
 
 ## Examples
 
-The algorithm calculates the circular variance within a moving window and classifies coordinates as either 'static' or 'mobile' based on departures from a threshold value.  The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens.  Purple dots represent periods of mobile activity and yellow dots represent periods of static activity.
+The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens.  Purple dots represent periods of mobile activity and yellow dots represent periods of static activity at various exhibits.
 
 ![](./docs/zoo_deck.gif)
 
@@ -39,9 +39,7 @@ wgs_sf(d_clusters) %>%
 To install `circleclust`, use the following code:
 
 ``` r
-install.packages("devtools")
 devtools::install_github("wolfeclw/circleclust")
-library(circleclust)
 ```
 
 #### Related Packages
