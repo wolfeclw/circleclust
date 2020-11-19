@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • circleclust</title>
+<title>Walk through Friendship Park — friendship • circleclust</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Walk through Friendship Park — friendship" />
+<meta property="og:description" content="A dataset containing latitude and longitude coordinates recorded during a walk in
+Theodore M. Berry International Friendship Park in Cincinnati, OH" />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -94,102 +96,32 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Walk through Friendship Park</h1>
+    
+    <div class="hidden name"><code>friendship.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>A dataset containing latitude and longitude coordinates recorded during a walk in
+Theodore M. Berry International Friendship Park in Cincinnati, OH</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='va'>friendship</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="circleclust.html">circleclust()</a></code> </p>
-        </td>
-        <td><p>Cluster coordinates based on circular variance</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cluster_deck.html">cluster_deck()</a></code> </p>
-        </td>
-        <td><p>Create a <code>mapdeck</code> pointcloud</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dt_aggregate.html">dt_aggregate()</a></code> </p>
-        </td>
-        <td><p>Aggregate data by time unit</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="friendship.html">friendship</a></code> </p>
-        </td>
-        <td><p>Walk through Friendship Park</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="impute_coords.html">impute_coords()</a></code> </p>
-        </td>
-        <td><p>Impute missing GPS data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="move.html">move()</a></code> </p>
-        </td>
-        <td><p>Calculate speed and azimuth of series of latitude and longitude coordinates</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_columbus.html">read_columbus()</a></code> </p>
-        </td>
-        <td><p>Read Columbus gps logger .csv file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="set_token.html">set_token()</a></code> </p>
-        </td>
-        <td><p>Set <code>mapdeck</code> token</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wgs_sf.html">wgs_sf()</a></code> </p>
-        </td>
-        <td><p>Create <code>sf</code> Object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="woodland.html">woodland</a></code> </p>
-        </td>
-        <td><p>Car transit and walking trip through Woodland Mound</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="zoo_trip.html">zoo_trip</a></code> </p>
-        </td>
-        <td><p>Walk through Cincinnati Zoo and Botanical Gardens</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with 3,156 rows and 3 variables:</p><dl>
+<dt>Date_Time</dt><dd><p>datetime of logged coordinates</p></dd>
+<dt>lat</dt><dd><p>latitude</p></dd>
+<dt>lon</dt><dd><p>longitude</p></dd>
+
+</dl>
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

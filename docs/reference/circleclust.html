@@ -187,6 +187,9 @@ to the input data frame.</p>
     <p>Observations belonging to a cluster are assigned to a cluster group,
 which are ordered temporally. Further, observations are marked as either
 static or mobile.</p>
+<p>The <code>circleclust()</code> function has been optimized to detect changes in activity
+pattern within a 5-minute moving window and a threshold circular variance of 0.7.
+These parameters can be adjusted if desired.</p>
 <p>Imputing lon/lat values using <code><a href='impute_coords.html'>impute_coords()</a></code> is recommended if GPS
 coordinates are missing.</p>
 
@@ -194,8 +197,16 @@ coordinates are missing.</p>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='fu'>circleclust</span><span class='op'>(</span><span class='va'>df</span>, dt_field <span class='op'>=</span> <span class='cn'>NULL</span>, circvar_threshold <span class='op'>=</span> <span class='fl'>.7</span>, window <span class='op'>=</span> <span class='fl'>60</span>,
-cluster_threshold <span class='op'>=</span> <span class='cn'>NULL</span>, show_circvar <span class='op'>=</span> <span class='cn'>FALSE</span>, rspeed_threshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cluster_threshold <span class='op'>=</span> <span class='cn'>NULL</span>, show_circvar <span class='op'>=</span> <span class='cn'>FALSE</span>, rspeed_threshold <span class='op'>=</span> <span class='cn'>NULL</span>,
   pl_dist_threshold <span class='op'>=</span> <span class='cn'>NULL</span>,  cluster_threshold <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+
+
+<span class='va'>zoo_trip</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='impute_coords.html'>impute_coords</a></span><span class='op'>(</span><span class='st'>'Date_Time'</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='dt_aggregate.html'>dt_aggregate</a></span><span class='op'>(</span><span class='st'>'Date_Time'</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='move.html'>move</a></span><span class='op'>(</span><span class='st'>'Date_Time'</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>circleclust</span><span class='op'>(</span><span class='st'>'Date_Time'</span>, pl_dist_threshold <span class='op'>=</span> <span class='fl'>25</span>, show_circvar <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
 <span class='op'>}</span>
 </div></pre>
   </div>

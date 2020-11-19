@@ -108,8 +108,9 @@
 
     <pre class="usage"><span class='fu'>impute_coords</span><span class='op'>(</span>
   <span class='va'>df</span>,
+  dt_field <span class='op'>=</span> <span class='cn'>NULL</span>,
   distance_threshold <span class='op'>=</span> <span class='fl'>100</span>,
-  jitter_amount <span class='op'>=</span> <span class='fl'>1e-05</span>,
+  jitter_amount <span class='op'>=</span> <span class='fl'>5e-05</span>,
   show_lapse_distance <span class='op'>=</span> <span class='cn'>FALSE</span>,
   fill_open_lapses <span class='op'>=</span> <span class='cn'>FALSE</span>,
   speed_threshold <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -125,6 +126,10 @@
       <td><p>data frame containing latitude (<code>lat</code>) and longitude (<code>lon</code>)</p></td>
     </tr>
     <tr>
+      <th>dt_field</th>
+      <td><p>POSIXct; name of datetime field.</p></td>
+    </tr>
+    <tr>
       <th>distance_threshold</th>
       <td><p>numeric; distance (meters) between the last known coordinates before
 GPS signal loss and the first known coordinates following signal loss are compared to
@@ -134,7 +139,7 @@ imputed. Default = 100 meters.</p></td>
     <tr>
       <th>jitter_amount</th>
       <td><p>numeric; amount of jitter to apply to imputed coords.
-Default = 0.00001 decimal degrees. See <code><a href='https://r-spatial.github.io/sf/reference/st_jitter.html'>st_jitter</a></code>.</p></td>
+Default = 0.00005 decimal degrees. See <code><a href='https://r-spatial.github.io/sf/reference/st_jitter.html'>st_jitter</a></code>.</p></td>
     </tr>
     <tr>
       <th>show_lapse_distance</th>
