@@ -14,7 +14,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' set_token('my_mapbox_token')
+#' set_token("my_mapbox_token")
 #' }
 set_token <- function(token) {
   mapdeck::set_token(token)

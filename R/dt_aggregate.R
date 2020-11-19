@@ -19,21 +19,22 @@
 #' @examples
 #' \dontrun{
 #'
-#' dt_aggregate(df, dt_field = 'Date_Time',
+#' dt_aggregate(df,
+#'   dt_field = "Date_Time",
 #'   unit = "5 seconds", floor_or_ceiling = "floor",
 #'   summary_fun = "median", na_rm_agg = TRUE
 #' )
 #' }
 #' @importFrom stats median
 dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celiling = "floor",
-                          summary_fun = "median", na_rm_agg = TRUE) {
-
+                         summary_fun = "median", na_rm_agg = TRUE) {
   if (is.null(dt_field)) {
-    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+    stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
-    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
-         call. = FALSE)
+    stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
+      call. = FALSE
+    )
   }
 
   if (floor_or_celiling == "floor") {
@@ -41,23 +42,22 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
       dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
       dplyr::group_by(agg_dt) %>%
       dplyr::summarise_if(is.numeric, summary_fun, na.rm = na_rm_agg) %>%
-      dplyr::rename('{{dt_field}}' := agg_dt)
+      dplyr::rename("{{dt_field}}" := agg_dt)
 
-    n <- gsub('["]', '', names(d_agg))
+    n <- gsub('["]', "", names(d_agg))
     colnames(d_agg) <- n
-
   } else {
     d_agg <- df %>%
       dplyr::mutate(agg_dt = lubridate::floor_date(.data[[dt_field]], unit = unit)) %>%
       dplyr::group_by(agg_dt) %>%
       dplyr::summarise_if(is.numeric, summary_fun, na.rm = na_rm_agg) %>%
-      dplyr::rename('{{dt_field}}' := agg_dt)
+      dplyr::rename("{{dt_field}}" := agg_dt)
 
-    n <- gsub('["]', '', names(d_agg))
+    n <- gsub('["]', "", names(d_agg))
     colnames(d_agg) <- n
-    }
+  }
 
-  no_num_cols <- dplyr::select_if(df, ~!is.numeric(.)) %>% dplyr::select(., -{{dt_field}})
+  no_num_cols <- dplyr::select_if(df, ~ !is.numeric(.)) %>% dplyr::select(., -{{ dt_field }})
 
   if (ncol(no_num_cols) == 0) {
     d_agg
@@ -65,7 +65,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     unq_lgl <- no_num_cols %>%
       purrr::map(., unique) %>%
       purrr::map_chr(., length) %>%
-      purrr::map_lgl(., ~. == 1)
+      purrr::map_lgl(., ~ . == 1)
 
     char_keep <- no_num_cols[unq_lgl][1:nrow(d_agg), ]
     rm_cols <- no_num_cols[!unq_lgl] %>% names()

@@ -13,23 +13,24 @@
 #' @examples
 #' \dontrun{
 #'
-#' move_move(df, dt_field = 'Date_Time')
+#' move_move(df, dt_field = "Date_Time")
 #' }
 move <- function(df, dt_field = NULL) {
   if (sum(stringr::str_detect(names(df), "lat")) == 0) {
-    stop('`lat` and/or `lon` colunms found. Latitude and longitude columns should be named appropriately.', call. = FALSE)
+    stop("`lat` and/or `lon` colunms found. Latitude and longitude columns should be named appropriately.", call. = FALSE)
   }
 
   if (is.null(dt_field)) {
-    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+    stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
-    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
-         call. = FALSE)
+    stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
+      call. = FALSE
+    )
   }
 
   if (sum(is.na(df$lat)) == nrow(df)) {
-    message('The input data frame does not have valid `lon`/`lat` coordinates. Speed and azimuth were not calculated.')
+    message("The input data frame does not have valid `lon`/`lat` coordinates. Speed and azimuth were not calculated.")
   }
 
   d_speed <- df %>%
@@ -44,10 +45,11 @@ move <- function(df, dt_field = NULL) {
       lag_lon = dplyr::lag(lon),
       distance = geosphere::distHaversine(cbind(lon, lat), cbind(lag_lon, lag_lat)),
       azimuth = geosphere::bearing(cbind(lon, lat), cbind(lag_lon, lag_lat)) + 180,
-      speed_ms = round(distance / as.numeric(lag_time.diff), digits = 1)) %>%
+      speed_ms = round(distance / as.numeric(lag_time.diff), digits = 1)
+    ) %>%
     dplyr::select(-c(starts_with("lag"), distance))
 
-  #message(paste("A total of", sum(duplicated(.data[[dt_field]])), "rows had dupliated timestamps and were removed."))
+  # message(paste("A total of", sum(duplicated(.data[[dt_field]])), "rows had dupliated timestamps and were removed."))
 
   d_speed
 }

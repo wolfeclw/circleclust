@@ -39,27 +39,33 @@
 impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = 0.00005,
                           show_lapse_distance = FALSE, fill_open_lapses = FALSE, speed_threshold = NULL,
                           speed_window = NULL, open_lapse_length = NULL) {
-
   if (is.null(dt_field)) {
-    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+    stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
-    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
-         call. = FALSE)
+    stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
+      call. = FALSE
+    )
   } else if (is.unsorted(df[[dt_field]])) {
-    stop(paste0('The input data frame should be sorted by ', {{dt_field}}, '.'),
-         call. = FALSE)
+    stop(paste0("The input data frame should be sorted by ", {{ dt_field }}, "."),
+      call. = FALSE
+    )
   }
 
-  open_parms_lgl <- sum(purrr::map_lgl(c(speed_threshold, speed_window, open_lapse_length),
-                                       is.numeric))
+  open_parms_lgl <- sum(purrr::map_lgl(
+    c(speed_threshold, speed_window, open_lapse_length),
+    is.numeric
+  ))
 
   d_imputed <- if (sum(!is.na(df$lat)) == nrow(df) | sum(!is.na(df$lat)) == 0) {
     df %>% dplyr::mutate(imputed_coord = 0)
   } else if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
-    stop(paste('To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,',
-               'and `open_lapse_lenth`.', sep = '\n'),
-         call. = FALSE)
+    stop(paste("To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,",
+      "and `open_lapse_lenth`.",
+      sep = "\n"
+    ),
+    call. = FALSE
+    )
   } else if (fill_open_lapses == TRUE) {
     impute_coords_open(df,
       distance_threshold = distance_threshold, jitter_amount = jitter_amount,
@@ -88,9 +94,12 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
   }
 
   if (fill_open_lapses == FALSE & open_parms_lgl > 0) {
-    warning(paste('Values assigned to `speed_threshold`, `speed_window`, and/or `open_lapse_lenth` were ignored.',
-                  'Set `fill_open_lapses` == `TRUE`.', sep = '\n'),
-            call. = FALSE)
+    warning(paste("Values assigned to `speed_threshold`, `speed_window`, and/or `open_lapse_lenth` were ignored.",
+      "Set `fill_open_lapses` == `TRUE`.",
+      sep = "\n"
+    ),
+    call. = FALSE
+    )
   }
 
   if (sum(!is.na(df$lat)) == nrow(df)) {

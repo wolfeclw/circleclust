@@ -6,7 +6,6 @@
 # 'rspeed_threshold' is defined.
 
 rspeed_minute <- function(x, rs_window) {
-
   if (sum(is.na(x)) > 0) {
     zoo::rollmedian(x, rs_window, na.rm = TRUE, fill = NA, align = "center")
   } else {
@@ -133,11 +132,12 @@ cluster <- function(df, cluster_threshold = NULL) {
 
     rm_clust <- sum(clust_n < cluster_threshold)
 
-    d_clust <- dc %>% dplyr::select(-c(move_break, r, place_grp,
-                                       place_lapse_grp, pl_distance, cluster_nrow))
+    d_clust <- dc %>% dplyr::select(-c(
+      move_break, r, place_grp,
+      place_lapse_grp, pl_distance, cluster_nrow
+    ))
 
     if (rm_clust > 0) {
-
       dc[!is.na(dc$cluster_nrow) & dc$cluster_nrow < cluster_threshold, "place_grp"] <- NA
 
       dc_rm <- dc[, !grepl("cluster_grp", colnames(dc))]

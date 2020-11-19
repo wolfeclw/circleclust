@@ -95,8 +95,7 @@ impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = jit
 
       d_dist_imputed <- jitter_join %>%
         dplyr::mutate(
-          imputed_coord = ifelse(!is.na(jlat), 1, 0
-          ),
+          imputed_coord = ifelse(!is.na(jlat), 1, 0),
           lat = ifelse(is.na(jlat), lat, jlat),
           lon = ifelse(is.na(jlon), lon, jlon)
         ) %>%
@@ -144,10 +143,11 @@ impute_coords_open <- function(df,
   speed_f <- function(df) {
     d_speed <- df %>%
       dplyr::filter(!duplicated(Date_Time)) %>%
-      dplyr:: mutate(
+      dplyr::mutate(
         lag_time.diff = lubridate::ymd_hms(Date_Time) - dplyr::lag(lubridate::ymd_hms(Date_Time)),
         distance = geosphere::distHaversine(cbind(lon, lat), cbind(dplyr::lag(lon), dplyr::lag(lat)),
-                                            r = 6378137),
+          r = 6378137
+        ),
         speed_ms = round(distance / as.numeric(lag_time.diff), digits = 2)
       ) %>%
       dplyr::select(distance, speed_ms)

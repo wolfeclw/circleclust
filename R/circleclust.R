@@ -51,21 +51,22 @@
 #' @examples
 #' \dontrun{
 #'
-#' circleclust(df, dt_field = NULL, circvar_threshold = .7, window = 60,
+#' circleclust(df,
+#'   dt_field = NULL, circvar_threshold = .7, window = 60,
 #'   cluster_threshold = NULL, show_circvar = FALSE, rspeed_threshold = NULL,
-#'   pl_dist_threshold = NULL,  cluster_threshold = NULL)
+#'   pl_dist_threshold = NULL, cluster_threshold = NULL
+#' )
 #'
 #'
 #' zoo_trip %>%
-#'   impute_coords('Date_Time') %>%
-#'   dt_aggregate('Date_Time') %>%
-#'   move('Date_Time') %>%
-#'   circleclust('Date_Time', pl_dist_threshold = 25, show_circvar = TRUE)
-#'
+#'   impute_coords("Date_Time") %>%
+#'   dt_aggregate("Date_Time") %>%
+#'   move("Date_Time") %>%
+#'   circleclust("Date_Time", pl_dist_threshold = 25, show_circvar = TRUE)
 #' }
 circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60,
                         show_circvar = FALSE, rspeed_threshold = NULL,
-                        pl_dist_threshold = NULL,  cluster_threshold = NULL) {
+                        pl_dist_threshold = NULL, cluster_threshold = NULL) {
   if (sum(stringr::str_detect(names(df), "azimuth")) == 0) {
     stop("Column 'azimuth' not found.  Use `move()` to calculate the azimuth",
       call. = FALSE
@@ -73,22 +74,24 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   }
 
   if (is.null(dt_field)) {
-    stop('`dt_field` has not been assigned a value.', call. = FALSE)
+    stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
-    stop(paste0('`dt_field` must be a datetime. `', {{dt_field}}, '` is of class ', c_dt_field, '.'),
-         call. = FALSE)
+    stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
+      call. = FALSE
+    )
   }
 
   time_unit <- floor(median(diff(df[[dt_field]])))
-  units(time_unit) <- 'secs'
+  units(time_unit) <- "secs"
   time_unit <- as.numeric(time_unit)
 
-  t_unit_window <- 60/time_unit ## 1 minute rolling window to calculate speed
+  t_unit_window <- 60 / time_unit ## 1 minute rolling window to calculate speed
 
-  if(time_unit > 60) {
-    stop('The `Date_Time` interval is greater than 60 seconds. Reduce the time unit when aggregating (5 seconds is recommended).',
-         call. = FALSE)
+  if (time_unit > 60) {
+    stop("The `Date_Time` interval is greater than 60 seconds. Reduce the time unit when aggregating (5 seconds is recommended).",
+      call. = FALSE
+    )
   }
 
   d_variance <- df %>%
@@ -103,23 +106,27 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
       a_y2 = (sum_sin / window)^2,
       a_x2 = (sum_cos / window)^2,
       res_length = ifelse(is.na(lat), NA, sqrt(a_y2 + a_x2)),
-      circvar = round(1 - res_length, digits = 1))
+      circvar = round(1 - res_length, digits = 1)
+    )
 
   if (is.null(rspeed_threshold)) {
     d_break <- d_variance %>%
-      dplyr::mutate(move_break = ifelse(circvar >= circvar_threshold, 1, 0),
-             r = dplyr::row_number())%>%
+      dplyr::mutate(
+        move_break = ifelse(circvar >= circvar_threshold, 1, 0),
+        r = dplyr::row_number()
+      ) %>%
       dplyr::select(-c(a_rad:res_length))
   } else if (is.numeric(rspeed_threshold)) {
-
     d_break <- d_variance %>%
-      dplyr::mutate(roll_speed = rspeed_minute(speed_ms, t_unit_window),
-             roll_speed = zoo::na.locf(roll_speed, na.rm = FALSE, maxgap = t_unit_window),
-             move_break = ifelse(circvar >= circvar_threshold & roll_speed <= rspeed_threshold, 1, 0),
-             r = dplyr::row_number()) %>%
+      dplyr::mutate(
+        roll_speed = rspeed_minute(speed_ms, t_unit_window),
+        roll_speed = zoo::na.locf(roll_speed, na.rm = FALSE, maxgap = t_unit_window),
+        move_break = ifelse(circvar >= circvar_threshold & roll_speed <= rspeed_threshold, 1, 0),
+        r = dplyr::row_number()
+      ) %>%
       dplyr::select(-c(a_rad:res_length, roll_speed))
   } else {
-    stop('`rspeed_threshold` must be numeric or set to NULL', call. = FALSE)
+    stop("`rspeed_threshold` must be numeric or set to NULL", call. = FALSE)
   }
 
   if (sum(d_break$move_break, na.rm = TRUE) > 0) {
@@ -140,8 +147,8 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     d_clusters <- cluster(d_places, cluster_threshold = cluster_threshold)
 
     if (is.na(d_clusters$cluster_grp[window / 2 - 1])) {
-      c_grp1 <- d_clusters$cluster_grp[window/2]
-      d_clusters$cluster_grp[1:(window/2 - 1)] <- c_grp1
+      c_grp1 <- d_clusters$cluster_grp[window / 2]
+      d_clusters$cluster_grp[1:(window / 2 - 1)] <- c_grp1
     }
   } else if (sum(!is.na(df$lat) > 0) & sum(d_break$move_break, na.rm = TRUE) == 0) {
     d_clusters <- d_break %>%
@@ -171,7 +178,9 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   }
 
   d_clusters <- d_clusters %>%
-    dplyr::mutate(activity_status = dplyr::case_when(!is.na(cluster_grp) ~ 'static',
-                                                     is.na(cluster_grp) & !is.na(lat) ~ 'mobile'))
+    dplyr::mutate(activity_status = dplyr::case_when(
+      !is.na(cluster_grp) ~ "static",
+      is.na(cluster_grp) & !is.na(lat) ~ "mobile"
+    ))
   d_clusters
 }

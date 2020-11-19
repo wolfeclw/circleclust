@@ -21,26 +21,27 @@
 #' @examples
 #' \dontrun{
 #'
-#' cluster_deck(df, tooltip = 'cluster_grp', fill_colour = 'cluster_grp',
-#'   elevation = NULL, radius = 10, palette = 'viridis', legend = TRUE
+#' cluster_deck(df,
+#'   tooltip = "cluster_grp", fill_colour = "cluster_grp",
+#'   elevation = NULL, radius = 10, palette = "viridis", legend = TRUE
 #' )
 #' }
-cluster_deck <- function(df, tooltip = 'cluster_grp', fill_colour = 'cluster_grp', elevation = NULL,
-                         radius = 10, palette = 'viridis', legend = TRUE) {
-
+cluster_deck <- function(df, tooltip = "cluster_grp", fill_colour = "cluster_grp", elevation = NULL,
+                         radius = 10, palette = "viridis", legend = TRUE) {
   df_class <- class(df)
 
-  if(sum(stringr::str_detect(df_class, 'sf')) == 0) {
-    stop('The input data frame is not an `sf` object. Try using `wgs_sf()` to transform the
-         input data frame.',
-         call. = FALSE)
+  if (sum(stringr::str_detect(df_class, "sf")) == 0) {
+    stop("The input data frame is not an `sf` object. Try using `wgs_sf()` to transform the
+         input data frame.",
+      call. = FALSE
+    )
   }
 
   if (!is.null(tooltip)) {
     tt <- df[tooltip] %>% sf::st_drop_geometry()
 
     if (purrr::map_lgl(tt, lubridate::is.POSIXct)) {
-      df$tltp <- lubridate::ymd_hms(df[[tooltip]], tz = 'UTC')
+      df$tltp <- lubridate::ymd_hms(df[[tooltip]], tz = "UTC")
     } else {
       df$tltp <- df[[tooltip]]
     }
@@ -48,13 +49,12 @@ cluster_deck <- function(df, tooltip = 'cluster_grp', fill_colour = 'cluster_grp
 
   mapdeck::mapdeck() %>%
     mapdeck::add_pointcloud(
-      data = df
-      , tooltip = 'tltp'
-      , fill_colour = fill_colour
-      , elevation = elevation
-      , radius = radius
-      , palette = palette
-      , legend = legend
-
+      data = df,
+      tooltip = "tltp",
+      fill_colour = fill_colour,
+      elevation = elevation,
+      radius = radius,
+      palette = palette,
+      legend = legend
     )
 }

@@ -15,9 +15,8 @@
 #' ufp_sf(df)
 #' }
 wgs_sf <- function(df) {
-
   if (sum(stringr::str_detect(names(df), "lon|lat")) < 2) {
-    stop('The input data frame is missing longitude and latitude, or the columns are not properly labeled (i.e. `lon` and `lat`).')
+    stop("The input data frame is missing longitude and latitude, or the columns are not properly labeled (i.e. `lon` and `lat`).")
   }
 
   if (sum(is.na(df$lat)) == nrow(df)) {
