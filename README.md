@@ -12,7 +12,7 @@ The map below shows personal location data recorded while talking a stroll throu
 
 Plotting the bearing (azimuth) between sequential points gives an under the hood look at how the algorithm classifies coordinates. We see a higher degree of variability in the bearings classified as 'static', while the purple 'mobile' bearings demonstrate a consistent trajectory.
 
-![](./docs/hc_zoo2.png)
+![](./docs/hc_zoo.png)
 
 #### A typical workflow looks something like this:
 
