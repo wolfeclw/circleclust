@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.7)  19 NOV 2020 15:03
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.7)  19 NOV 2020 21:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1102,7 +1102,7 @@ We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
 LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <8> not available
-(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 319.
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 321.
 [1
 
 ]
@@ -1120,11 +1120,11 @@ ust/renv/library/R-4.0/x86_64-apple-darwin17.0/rticles/rmarkdown/templates/joss
 env/library/R-4.0/x86_64-apple-darwin17.0/rticles/rmarkdown/templates/joss/reso
 urces/JOSS-logo.png>
 [3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 372.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 372.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 374.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 374.
 (./paper.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 372.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 372.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 374.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 374.
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: A1EAB75FF2615B98DBB567DC20945B2C;200.
 Package logreq Info: Writing requests to 'paper.run.xml'.
@@ -1134,7 +1134,7 @@ Package logreq Info: Writing requests to 'paper.run.xml'.
 Here is how much of TeX's memory you used:
  34752 strings out of 479418
  693296 string characters out of 5884586
- 1404356 words of memory out of 5000000
+ 1405475 words of memory out of 5000000
  51714 multiletter control sequences out of 15000+600000
  539194 words of font info for 70 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

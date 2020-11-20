@@ -32,7 +32,7 @@ Circular or directional statistics is the study of directional or angular data. 
 
 Plotting the bearings, as shown in \autoref{fig:1}, illustrates how the algorithm classifies location data as either mobile or belonging to a cluster.  Periods of transit (purple) exhibit a consistent trajectory, whereas periods of static activity (yellow) demonstrate a higher degree of variation.
 
-![Walking in Cincinnati Zoo and Botanical Garden.\label{fig:1}](hc_zoo.png)
+![Personal location data recorded on a visit to Cincinnati Zoo and Botanical Gardens. Periods of walking are shown in purple, while static activity is shown in yellow. \label{fig:1}](hc_zoo.png)
 
 # Statement of need
 
