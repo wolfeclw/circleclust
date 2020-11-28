@@ -20,6 +20,6 @@ You can request a mapbox acces token \href{https://docs.mapbox.com/help/how-mapb
 \examples{
 \dontrun{
 
-set_token('my_mapbox_token')
+set_token("my_mapbox_token")
 }
 }

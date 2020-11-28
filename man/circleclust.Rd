@@ -73,16 +73,17 @@ coordinates are missing.
 \examples{
 \dontrun{
 
-circleclust(df, dt_field = NULL, circvar_threshold = .7, window = 60,
+circleclust(df,
+  dt_field = NULL, circvar_threshold = .7, window = 60,
   cluster_threshold = NULL, show_circvar = FALSE, rspeed_threshold = NULL,
-  pl_dist_threshold = NULL,  cluster_threshold = NULL)
+  pl_dist_threshold = NULL, cluster_threshold = NULL
+)
 
 
 zoo_trip \%>\%
-  impute_coords('Date_Time') \%>\%
-  dt_aggregate('Date_Time') \%>\%
-  move('Date_Time') \%>\%
-  circleclust('Date_Time', pl_dist_threshold = 25, show_circvar = TRUE)
-
+  impute_coords("Date_Time") \%>\%
+  dt_aggregate("Date_Time") \%>\%
+  move("Date_Time") \%>\%
+  circleclust("Date_Time", pl_dist_threshold = 25, show_circvar = TRUE)
 }
 }

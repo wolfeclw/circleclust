@@ -41,8 +41,9 @@ See (\code{\link[mapdeck]{add_pointcloud}})
 \examples{
 \dontrun{
 
-cluster_deck(df, tooltip = 'cluster_grp', fill_colour = 'cluster_grp',
-  elevation = NULL, radius = 10, palette = 'viridis', legend = TRUE
+cluster_deck(df,
+  tooltip = "cluster_grp", fill_colour = "cluster_grp",
+  elevation = NULL, radius = 10, palette = "viridis", legend = TRUE
 )
 }
 }

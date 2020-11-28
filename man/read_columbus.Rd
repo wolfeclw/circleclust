@@ -22,7 +22,6 @@ read_columbus(path, tzone_gps = "UTC", tzone_out = "America/New_York")
 \examples{
 \dontrun{
 
-read_columbus(path, tzone_gps = 'UTC', tzone_out = 'America/New_York.'
-)
+read_columbus(path, tzone_gps = "UTC", tzone_out = "America/New_York.")
 }
 }

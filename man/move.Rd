@@ -21,6 +21,6 @@ coordinates.
 \examples{
 \dontrun{
 
-move_move(df, dt_field = 'Date_Time')
+move_move(df, dt_field = "Date_Time")
 }
 }
