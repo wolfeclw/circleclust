@@ -1,5 +1,9 @@
 # circleclust
 
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
 `circleclust` is a collection of functions that facilitate the analysis of personal location data to decipher patterns in mobility using circular or [directional statistics](https://en.wikipedia.org/wiki/Directional_statistics). 
 
 The `circleclust()` function classifies coordinates into distinct spatiotemporal clusters based on circular variance, or the variability in the bearing between sequential points or [dihedral angles](https://en.wikipedia.org/wiki/Dihedral_angle). The underlying algorithm calculates circular variance within a moving window and classifies coordinates as either 'static' or 'mobile' based on departures from a threshold value.

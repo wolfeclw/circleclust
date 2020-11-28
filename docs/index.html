@@ -49,22 +49,24 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
 <div id="circleclust" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#circleclust" class="anchor"></a>circleclust</h1></div>
+<!-- badges: start -->
+
 <p><code>circleclust</code> is a collection of functions that facilitate the analysis of personal location data to decipher patterns in mobility using circular or <a href="https://en.wikipedia.org/wiki/Directional_statistics">directional statistics</a>.</p>
 <p>The <code><a href="reference/circleclust.html">circleclust()</a></code> function classifies coordinates into distinct spatiotemporal clusters based on circular variance, or the variability in the bearing between sequential points or <a href="https://en.wikipedia.org/wiki/Dihedral_angle">dihedral angles</a>. The underlying algorithm calculates circular variance within a moving window and classifies coordinates as either ‘static’ or ‘mobile’ based on departures from a threshold value.</p>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens. Purple dots represent periods of mobile activity and yellow dots represent periods of static activity at various exhibits.</p>
-<p><img src="./docs/zoo_deck.gif"></p>
+<p><img src="zoo_deck.gif"></p>
 <p>Plotting the bearing (azimuth) between sequential points gives an under the hood look at how the algorithm classifies coordinates. We see a higher degree of variability in the bearings classified as ‘static’, while the purple ‘mobile’ bearings demonstrate a consistent trajectory.</p>
-<p><img src="./docs/hc_zoo.png"></p>
+<p><img src="hc_zoo.png"></p>
 <div id="a-typical-workflow-looks-something-like-this" class="section level4">
 <h4 class="hasAnchor">
 <a href="#a-typical-workflow-looks-something-like-this" class="anchor"></a>A typical workflow looks something like this:</h4>
@@ -82,13 +84,13 @@
 </li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d_clusters</span> <span class="op">&lt;-</span> <span class="va">zoo_trip</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">d_clusters</span> <span class="op">&lt;-</span> <span class="va">zoo_trip</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/impute_coords.html">impute_coords</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/dt_aggregate.html">dt_aggregate</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/circleclust.html">circleclust</a></span><span class="op">(</span><span class="st">'Date_Time'</span>, pl_dist_threshold <span class="op">=</span> <span class="fl">25</span>, show_circvar <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="fu"><a href="reference/wgs_sf.html">wgs_sf</a></span><span class="op">(</span><span class="va">d_clusters</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="fu"><a href="reference/wgs_sf.html">wgs_sf</a></span><span class="op">(</span><span class="va">d_clusters</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/cluster_deck.html">cluster_deck</a></span><span class="op">(</span>fill_colour <span class="op">=</span> <span class="st">'activity_status'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -122,7 +124,13 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -137,7 +145,7 @@
       </footer>
 </div>
 
-  
+
 
 
   </body>
