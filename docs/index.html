@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Spatiotemporal Clustering for Personal Location Data">
-<meta property="og:description" content="`circleclust` is a collection of functions that facilitate the analysis 
-    of personal location data to decipher patterns in mobility using 
+<meta property="og:description" content="`circleclust` is a collection of functions that facilitate the analysis
+    of personal location data to decipher patterns in mobility using
     circular or directional statistics.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -51,7 +51,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
@@ -66,7 +66,7 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens. Purple dots represent periods of mobile activity and yellow dots represent periods of static activity at various exhibits.</p>
-<p><img src="./zoo_deck.gif"></p>
+<p><img src="./zoo_deck.png"></p>
 <p>Plotting the bearing (azimuth) between sequential points gives an under the hood look at how the algorithm classifies coordinates. We see a higher degree of variability in the bearings classified as ‘static’, while the purple ‘mobile’ bearings demonstrate a consistent trajectory.</p>
 <p><img src="./hc_zoo.png"></p>
 <div id="a-typical-workflow-looks-something-like-this" class="section level4">
@@ -86,13 +86,13 @@
 </li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d_clusters</span> <span class="op">&lt;-</span> <span class="va">zoo_trip</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">d_clusters</span> <span class="op">&lt;-</span> <span class="va">zoo_trip</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/impute_coords.html">impute_coords</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/dt_aggregate.html">dt_aggregate</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span><span class="st">'Date_Time'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/circleclust.html">circleclust</a></span><span class="op">(</span><span class="st">'Date_Time'</span>, pl_dist_threshold <span class="op">=</span> <span class="fl">25</span>, show_circvar <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="fu"><a href="reference/wgs_sf.html">wgs_sf</a></span><span class="op">(</span><span class="va">d_clusters</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="fu"><a href="reference/wgs_sf.html">wgs_sf</a></span><span class="op">(</span><span class="va">d_clusters</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/cluster_deck.html">cluster_deck</a></span><span class="op">(</span>fill_colour <span class="op">=</span> <span class="st">'activity_status'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -147,7 +147,7 @@
       </footer>
 </div>
 
-  
+
 
 
   </body>
