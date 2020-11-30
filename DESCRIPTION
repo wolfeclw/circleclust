@@ -7,7 +7,9 @@ Authors@R:
            role = c("aut", "cre"),
            email = "chris.wolfe@cchmc.org",
            comment = c(ORCID = "https://orcid.org/0000-0002-5882-1149"))
-Description: What the package does (one paragraph).
+Description: `circleclust` is a collection of functions that facilitate the analysis 
+    of personal location data to decipher patterns in mobility using 
+    circular or directional statistics.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
