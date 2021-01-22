@@ -7,12 +7,18 @@
 read_columbus(
   path,
   gps_format = "nmea",
+  filter_fix = NULL,
   tzone_gps = "UTC",
   tzone_out = "America/New_York"
 )
 }
 \arguments{
 \item{path}{string; filepath of input .csv}
+
+\item{gps_format}{string; format of the input file ('nmea' or 'csv')}
+
+\item{filter_fix}{logical; should coordinates with invalid GPS fix be filtered out?
+Default = NULL  'gps_format' must be set to 'NMEA.'}
 
 \item{tzone_gps}{character; time zone of the Columbus logger. Default = 'UTC'}
 
