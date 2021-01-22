@@ -27,6 +27,7 @@ Imports:
     circular,
     geosphere,
     lubridate,
+    lwgeom,
     mapdeck,
     readr,
     scales,

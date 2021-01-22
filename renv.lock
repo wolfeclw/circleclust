@@ -53,10 +53,10 @@
     },
     "Rcpp": {
       "Package": "Rcpp",
-      "Version": "1.0.5",
+      "Version": "1.0.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "125dc7a0ed375eb68c0ce533b48d291f"
+      "Hash": "dbb5e436998a7eba5a9d682060533338"
     },
     "assertthat": {
       "Package": "assertthat",
@@ -282,13 +282,6 @@
       "Repository": "CRAN",
       "Hash": "e0c8b60f31e5805d185bebbcb91a5301"
     },
-    "highr": {
-      "Package": "highr",
-      "Version": "0.8",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4dc5bb88961e347a0f4d8aad597cbfac"
-    },
     "hms": {
       "Package": "hms",
       "Version": "0.5.3",
@@ -331,13 +324,6 @@
       "Repository": "CRAN",
       "Hash": "1ec84e070b88b37ed169f19def40d47c"
     },
-    "knitr": {
-      "Package": "knitr",
-      "Version": "1.30",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "eed7ee0d02eee88d53881cdc92457c62"
-    },
     "labeling": {
       "Package": "labeling",
       "Version": "0.4.2",
@@ -369,9 +355,21 @@
     "lubridate": {
       "Package": "lubridate",
       "Version": "1.7.9.2",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "lubridate",
+      "RemoteUsername": "tidyverse",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "aab2e30a07f870f5e0c36ad119b1b2df656e926a",
+      "Hash": "8d0e65f04ff73e8e7162da59ee07ed03"
+    },
+    "lwgeom": {
+      "Package": "lwgeom",
+      "Version": "0.2-5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5b5b02f621d39a499def7923a5aee746"
+      "Hash": "cf96b08482dfbed1b7ab7d0ba4395077"
     },
     "magrittr": {
       "Package": "magrittr",
@@ -386,13 +384,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "0deaf8f1844f2113bc3d9ab1cd1a07ce"
-    },
-    "markdown": {
-      "Package": "markdown",
-      "Version": "1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "61e4a10781dd00d7d81dd06ca9b94e95"
     },
     "mime": {
       "Package": "mime",
@@ -520,13 +511,6 @@
       "Repository": "CRAN",
       "Hash": "9d7aba7bed9a79e2403b4777428a2b12"
     },
-    "rmarkdown": {
-      "Package": "rmarkdown",
-      "Version": "2.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "20a0a94af9e8f7040510447763aab3e9"
-    },
     "rprojroot": {
       "Package": "rprojroot",
       "Version": "2.0.2",
@@ -632,13 +616,6 @@
       "Repository": "CRAN",
       "Hash": "6ea435c354e8448819627cf686f66e0a"
     },
-    "tinytex": {
-      "Package": "tinytex",
-      "Version": "0.27",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "264b4a31d35bb6833566a7763356ab63"
-    },
     "units": {
       "Package": "units",
       "Version": "0.6-7",
@@ -680,13 +657,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "7307d79f58d1885b38c4f4f1a8cb19dd"
-    },
-    "xfun": {
-      "Package": "xfun",
-      "Version": "0.19",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a42372606cb76f34da9d090326e9f955"
     },
     "xtable": {
       "Package": "xtable",

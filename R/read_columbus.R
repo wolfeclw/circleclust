@@ -4,6 +4,7 @@
 #' `read_columbus()` imports latitude and longitude from a Columbus gps logger file.
 #'
 #' @param path string; filepath of input .csv
+#' @param gps_format format of the input file
 #' @param tzone_gps character; time zone of the Columbus logger. Default = 'UTC'
 #' @param tzone_out character; time zone of the output file. Default = 'America/New_York.'
 #'
