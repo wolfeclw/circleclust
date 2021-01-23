@@ -58,6 +58,12 @@ columbus_nmea <- function(path, tzone_gps = NULL, tzone_out = NULL, filter_fix =
   l_gpgga <- stringr::str_split(t_gpgga, ',')
   l_gprmc <- stringr::str_split(t_gpmrc, ',')
 
+  lgl_15 <- map_lgl(l_gpgga, ~length(.) == 15)
+  lgl_13 <- map_lgl(l_gprmc, ~length(.) == 13)
+
+  l_gpgga <- l_gpgga[lgl_15]
+  l_gprmc <- l_gprmc[lgl_13]
+
   nmea_enf <- function(l, e_num) {
     l_var <- purrr::map(l, e_num)
     v_var <- unlist(l_var)
@@ -76,12 +82,14 @@ columbus_nmea <- function(path, tzone_gps = NULL, tzone_out = NULL, filter_fix =
 
   d_gprmc <- purrr::set_names(d_gprmc, c('gprmc', 'time', 'gprmc_fix', 'latitude', 'gprmc_lat_hem', 'longitude', 'gprmc_lon_hem',
                                          'gprmc_speed', 'gprmc_bearing', 'gprmc_date', 'gprmc_variation', 'gprmc_ew'))
+
   d_gps <- dplyr::inner_join(d_gpgga, d_gprmc) %>% suppressMessages()
+  d_gps <- map_df(d_gps, ~str_remove_all(., '[*]'))
+
   d_gps <- d_gps %>%
     dplyr::select(time:gpgga_alt, gprmc_speed:gprmc_date) %>%
     dplyr::relocate(gprmc_date) %>%
     dplyr::rename_with(., ~stringr::str_replace_all(., 'gpgga_|gprmc_', ''))
-
 
   d_deg <- d_gps %>%
     dplyr::select(starts_with(c('lat', 'lon'))) %>%
