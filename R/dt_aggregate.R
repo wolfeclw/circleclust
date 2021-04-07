@@ -71,7 +71,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     rm_cols <- no_num_cols[!unq_lgl] %>% names()
   }
 
-  if (length(no_num_cols > 0)) {
+  if (length(rm_cols > 0)) {
     message(
       "Column(s) `", paste(rm_cols, collapse = ", "),
       "` are of class 'character' and contain more than one unique value. These columns were \n removed during aggregation."
