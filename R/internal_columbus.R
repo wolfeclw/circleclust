@@ -119,7 +119,7 @@ columbus_nmea <- function(path, tzone_gps = NULL, tzone_out = NULL, filter_fix =
   }
 
   v_gps <- v_gps %>%
-    dplyr::mutate(date_utc = lubridate::ymd(date),
+    dplyr::mutate(date_utc = lubridate::dmy(date),
            hr = substr(time, 1, 2),
            min = substr(time, 3, 4),
            sec = substr(time, 5, 6),
