@@ -40,7 +40,7 @@ move <- function(df, dt_field = NULL, jitter_coords = FALSE) {
 
   dup_coords <- df %>%
     dplyr::select(lat, lon) %>%
-    dplyr::mutate(dup_lat = ifelse(lag(lat) == lat & lag(lon) == lon, 1, 0))
+    dplyr::mutate(dup_lat = ifelse(dplyr::lag(lat) == lat & dplyr::lag(lon) == lon, 1, 0))
 
   time_unit <- floor(quantile(diff(df[[dt_field]]), 0.75))
   units(time_unit) <- "secs"
