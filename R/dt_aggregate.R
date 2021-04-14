@@ -33,7 +33,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
     stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
-      call. = FALSE
+         call. = FALSE
     )
   }
 
@@ -71,7 +71,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     rm_cols <- no_num_cols[!unq_lgl] %>% names()
   }
 
-  if (length(no_num_cols > 0)) {
+  if (length(rm_cols > 0)) {
     message(
       "Column(s) `", paste(rm_cols, collapse = ", "),
       "` are of class 'character' and contain more than one unique value. These columns were \n removed during aggregation."

@@ -4,12 +4,17 @@
 \alias{move}
 \title{Calculate speed and azimuth of series of latitude and longitude coordinates}
 \usage{
-move(df, dt_field = NULL)
+move(df, dt_field = NULL, jitter_coords = FALSE)
 }
 \arguments{
 \item{df}{a data frame containing latitude (\code{lat}), longitude (\code{lon}), and a datetime.}
 
 \item{dt_field}{character; name of datetime field.}
+
+\item{jitter_coords}{logical; if TRUE, coordinates are jittered by a negligible
+amount (~1 cm). Jittering is recommended if the input data frame contains
+sequentially duplicated coordinates. Eliminating repeated coordinates is necessary to
+optimize the \emph{circleclust()} algorithm.}
 }
 \value{
 a data frame with columns for speed (m/s) and azimuth (degrees).

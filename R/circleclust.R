@@ -69,7 +69,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
                         pl_dist_threshold = NULL, cluster_threshold = NULL) {
   if (sum(stringr::str_detect(names(df), "azimuth")) == 0) {
     stop("Column 'azimuth' not found.  Use `move()` to calculate the azimuth",
-      call. = FALSE
+         call. = FALSE
     )
   }
 
@@ -78,7 +78,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
     stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
-      call. = FALSE
+         call. = FALSE
     )
   }
 
@@ -90,8 +90,30 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
 
   if (time_unit > 60) {
     stop("The `Date_Time` interval is greater than 60 seconds. Reduce the time unit when aggregating (5 seconds is recommended).",
-      call. = FALSE
+         call. = FALSE
     )
+  }
+
+  dup_coords <- df %>%
+    dplyr::select(lat, lon) %>%
+    dplyr::mutate(dup_lat = ifelse(lag(lat) == lat & lag(lon) == lon, 1, 0))
+
+  tdups <- table(dup_coords$dup_lat)
+
+  if (is.na(tdups[2])) {
+    pdups <- 0
+    dup_mins <- 0
+  } else {
+    pdups <- round(tdups[2]/(tdups[1] + tdups[2]), digits = 2)*100
+    dup_mins <- as.numeric(round(tdups[2]/(60/time_unit), digits = 1))
+  }
+
+  if (pdups > 5 & dup_mins > 3) {
+
+    warning(paste0('Approximately ', tdups[2], ' coordinates (', pdups, '%; ', dup_mins,
+                   ' min) are sequentially duplicated. Did you set  \n `jitter_coords = TRUE` when calculating the bearings using `move()`?',
+                   '\n\n Jittering will imporve algorithm performance, otherwise periods of stationary activity may not be detected'),
+            call. = FALSE)
   }
 
   d_variance <- df %>%
@@ -140,7 +162,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     if (!is.null(pl_dist_threshold) & max(d_places$place_grp, na.rm = TRUE) > 1) {
       d_places <- d_places %>%
         dplyr::mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold, zoo::na.locf(place_grp, na.rm = FALSE),
-          place_grp
+                                         place_grp
         ))
     }
 
