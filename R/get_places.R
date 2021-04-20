@@ -54,11 +54,6 @@ get_places <- function(df, nested = TRUE, geometry = TRUE, summary = FALSE, dt_f
       dplyr::select(-p_data)
   }
 
-  if (geometry == TRUE) {
-    dc <- dc %>%
-      sf::st_as_sf(., coords = c('p_lon', 'p_lat'), crs = 4326)
-  }
-
   if (summary == TRUE) {
 
     if (is.null(dt_field)) {
@@ -80,6 +75,11 @@ get_places <- function(df, nested = TRUE, geometry = TRUE, summary = FALSE, dt_f
 
     message(paste0('Measurements appear to have been recorded at a ', time_unit,
                    ' second sampling interval.'))
+  }
+
+  if (geometry == TRUE) {
+    dc <- dc %>%
+      sf::st_as_sf(., coords = c('p_lon', 'p_lat'), crs = 4326)
   }
 
   dc
