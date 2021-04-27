@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_tracks.R
 \name{get_tracks}
 \alias{get_tracks}
-\title{Extract locations of stationary activity}
+\title{Extract periods of mobile activity}
 \usage{
 get_tracks(df, nested = TRUE, geometry = TRUE, summary = TRUE, dt_field = NULL)
 }
@@ -27,9 +27,8 @@ information.}
 a data frame or \code{sf} object
 }
 \description{
-\code{get_places()} analyzes periods of stationary activity within each spatiotemporal
-cluster identified by \code{circleclust()} and transforms the coordinates into a
-single location or 'place'.
+\code{get_tracks()} extracts periods of mobile activity or tracks identified by
+\code{circleclust()}
 }
 \examples{
  \dontrun{

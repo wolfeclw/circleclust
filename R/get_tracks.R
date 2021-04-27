@@ -1,9 +1,8 @@
 
-#' Extract locations of stationary activity
+#' Extract periods of mobile activity
 #'
-#' `get_places()` analyzes periods of stationary activity within each spatiotemporal
-#' cluster identified by `circleclust()` and transforms the coordinates into a
-#' single location or 'place'.
+#' `get_tracks()` extracts periods of mobile activity or tracks identified by
+#' `circleclust()`
 #'
 #' @param df a data frame created by `circleclust()` containing cluster group (`cluster_grp`)
 #' @param nested logical; if TRUE, metadata for each track is nested in a list
