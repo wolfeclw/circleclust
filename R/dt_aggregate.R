@@ -5,7 +5,7 @@
 #' uniform character values are retained (i.e. patient ID, sensor name).
 #'
 #' @param df a data frame with a datetime field.
-#' @param dt_field POSIXct; name of datetime field.
+#' @param dt_field character; name of datetime field.
 #' @param unit character; string specifying a time unit or a multiple of a unit to be rounded
 #' @param floor_or_celiling character; either 'floor'(\code{\link[lubridate]{floor_date}})
 #' or 'ceiling'(\code{\link[lubridate]{ceiling_date}}). Default = 'floor.'

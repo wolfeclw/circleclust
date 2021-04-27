@@ -16,7 +16,7 @@ dt_aggregate(
 \arguments{
 \item{df}{a data frame with a datetime field.}
 
-\item{dt_field}{POSIXct; name of datetime field.}
+\item{dt_field}{character; name of datetime field.}
 
 \item{unit}{character; string specifying a time unit or a multiple of a unit to be rounded}
 

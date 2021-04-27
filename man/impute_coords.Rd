@@ -19,7 +19,7 @@ impute_coords(
 \arguments{
 \item{df}{data frame containing latitude (\code{lat}) and longitude (\code{lon})}
 
-\item{dt_field}{POSIXct; name of datetime field.}
+\item{dt_field}{character; name of datetime field.}
 
 \item{distance_threshold}{numeric; distance (meters) between the last known coordinates before
 GPS signal loss and the first known coordinates following signal loss are compared to
