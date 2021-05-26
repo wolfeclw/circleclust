@@ -21,6 +21,12 @@ grp_clusters <- function(df, distance_threshold = 100) {
 
   d_pos <- which(p_dist < distance_threshold & p_dist > 0, arr.ind = T)
 
+  if (nrow(d_pos) < 1) {
+    stop(paste0('All clusters are located more than ', distance_threshold, ' meters apart. ',
+                'Select a larger distance threshold to aggregate clusters.'),
+         call. = FALSE)
+  }
+
   g_list <- tibble::as_tibble(d_pos) %>%
     dplyr::mutate(rsum = row + col,
                   rdiff = abs(row - col)) %>%
