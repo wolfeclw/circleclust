@@ -38,7 +38,7 @@ get_tracks <- function(df, nested = TRUE, geometry = TRUE, summary = TRUE, dt_fi
 
   l_tracks <- df %>%
     dplyr::mutate(r = dplyr::row_number()) %>%
-    dplyr::filter(is.na(cluster_grp)) %>%
+    dplyr::filter(is.na(cluster_grp) & !is.na(lat)) %>%
     dplyr::mutate(
       lag_rownum = dplyr::lag(r),
       r_diff = r - lag_rownum,
