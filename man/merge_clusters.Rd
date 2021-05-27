@@ -17,7 +17,7 @@ clusters.}
 }
 \value{
 a data frame. The original spatiotemporal cluster values are retained
-in a column called \code{spatiotemp_cluster_grp}. Aggregated cluster values are
+in a column called \code{spatiotemp_cluster_grp}. New aggregate cluster values are
 listed under \code{cluster_grp}.
 }
 \description{

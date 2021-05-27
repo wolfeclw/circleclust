@@ -12,7 +12,7 @@
 #' clusters.
 #'
 #' @return a data frame. The original spatiotemporal cluster values are retained
-#' in a column called `spatiotemp_cluster_grp`. Aggregated cluster values are
+#' in a column called `spatiotemp_cluster_grp`. New aggregate cluster values are
 #' listed under `cluster_grp`.
 #'
 #' @export

@@ -77,23 +77,32 @@ reorder_grp_clusters <- function(df, dt_field = 'NULL', l_cluster_grps, cluster_
 
   grped_clusters <- purrr::map(1:length(l_cluster_grps),
                                ~dplyr::filter(df, cluster_grp %in% l_cluster_grps[[.]])) %>%
-    purrr::map(., ~dplyr::mutate(., cluster_grp2 = dplyr::first(cluster_grp)))
+    purrr::map(., ~dplyr::mutate(., spatiotemp_cluster_grp = cluster_grp,
+                                 merge_id = dplyr::first(cluster_grp)))
 
   ungrped_clusters <- purrr::map(cluster_list,
                                  ~dplyr::filter(., !cluster_grp %in% c(unlist(l_cluster_grps), NA))) %>%
     purrr::discard(~nrow(.) == 0) %>%
-    purrr::map(., ~dplyr::mutate(., cluster_grp2 = cluster_grp))
+    purrr::map(., ~dplyr::mutate(., spatiotemp_cluster_grp = cluster_grp,
+                                 merge_id = dplyr::first(cluster_grp)))
 
   na_clusters <- purrr::map(cluster_list, ~dplyr::filter(., is.na(cluster_grp))) %>%
     purrr::discard(~nrow(.) == 0) %>%
-    purrr::map(., ~dplyr::mutate(., cluster_grp2 = cluster_grp))
+    purrr::map(., ~dplyr::mutate(., spatiotemp_cluster_grp = cluster_grp))
 
-  cluster_bind <- c(grped_clusters, ungrped_clusters, na_clusters) %>%
+  cluster_bind <- c(grped_clusters, ungrped_clusters) %>%
     purrr::reduce(., dplyr::bind_rows) %>%
-    dplyr::rename(spatiotemp_cluster_grp = cluster_grp,
-                  cluster_grp = cluster_grp2) %>%
     dplyr::arrange(.[[dt_field]])
 
-  cluster_bind
+  l_bind <- dplyr::group_split(cluster_bind, merge_id)
+
+  c_reorder <- map(l_bind, ~dplyr::select(., -cluster_grp)) %>%
+    map2(., 1:length(.), ~dplyr::mutate(.x, cluster_grp = .y))
+
+  c_clust_mobile <- c(c_reorder, na_clusters)%>%
+    purrr::reduce(., bind_rows) %>%
+    dplyr::arrange(.[[dt_field]])
+
+  c_clust_mobile
 
 }
