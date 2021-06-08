@@ -5,7 +5,7 @@
 #' uniform character values are retained (i.e. patient ID, sensor name).
 #'
 #' @param df a data frame with a datetime field.
-#' @param dt_field POSIXct; name of datetime field.
+#' @param dt_field character; name of datetime field.
 #' @param unit character; string specifying a time unit or a multiple of a unit to be rounded
 #' @param floor_or_celiling character; either 'floor'(\code{\link[lubridate]{floor_date}})
 #' or 'ceiling'(\code{\link[lubridate]{ceiling_date}}). Default = 'floor.'
@@ -71,7 +71,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
     rm_cols <- no_num_cols[!unq_lgl] %>% names()
   }
 
-  if (length(rm_cols > 0)) {
+  if (ncol(no_num_cols) != 0) {
     message(
       "Column(s) `", paste(rm_cols, collapse = ", "),
       "` are of class 'character' and contain more than one unique value. These columns were \n removed during aggregation."

@@ -4,7 +4,7 @@
 #' `impute_coords()` imputes missing lon/lat coordinates that occur during GPS lapses.
 #'
 #' @param df data frame containing latitude (`lat`) and longitude (`lon`)
-#' @param dt_field POSIXct; name of datetime field.
+#' @param dt_field character; name of datetime field.
 #' @param distance_threshold numeric; distance (meters) between the last known coordinates before
 #' GPS signal loss and the first known coordinates following signal loss are compared to
 #' this value.  If the distance exceeds this threshold, coordinates are not

@@ -46,17 +46,11 @@ get_places <- function(df, nested = TRUE, geometry = TRUE, summary = FALSE, dt_f
   dc <- l_places %>%
     purrr::map_df(., ~dplyr::group_nest(., .key = 'p_data', cluster_grp, p_lat, p_lon))
 
-  np <- nrow(dc)
-  message(paste0('A total of ', np, ' spatiotemporal clusters were detected.'))
+
 
   if (nested == FALSE) {
     dc <- dc %>%
       dplyr::select(-p_data)
-  }
-
-  if (geometry == TRUE) {
-    dc <- dc %>%
-      sf::st_as_sf(., coords = c('p_lon', 'p_lat'), crs = 4326)
   }
 
   if (summary == TRUE) {
@@ -80,6 +74,27 @@ get_places <- function(df, nested = TRUE, geometry = TRUE, summary = FALSE, dt_f
 
     message(paste0('Measurements appear to have been recorded at a ', time_unit,
                    ' second sampling interval.'))
+  }
+
+  if (geometry == TRUE) {
+    dc <- dc %>%
+      sf::st_as_sf(., coords = c('p_lon', 'p_lat'), crs = 4326)
+  }
+
+  np <- nrow(dc)
+
+  if ('spatiotemp_cluster_grp' %in% names(df)) {
+    message(paste0('A total of ', np, ' places were detected.'))
+  } else {
+    message(paste0('A total of ', np, ' spatiotemporal places were detected.'))
+  }
+
+  if ('spatiotemp_cluster_grp' %in% names(df) & summary == TRUE) {
+    dc$start_time <- NA
+    dc$end_time <- NA
+
+    warning('Looks like the input data frame includes merged clusters. Start and end times cannot be calculted.',
+            call. = FALSE)
   }
 
   dc
