@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set mapdeck token — set_token • circleclust</title>
+<title>Impute datetime for gaps in GPS data — impute_time • circleclust</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,12 @@
 
 
 
-<meta property="og:title" content="Set mapdeck token — set_token" />
-<meta property="og:description" content="Makes mapbox API token available for mapdeck calls" />
+<meta property="og:title" content="Impute datetime for gaps in GPS data — impute_time" />
+<meta property="og:description" content="impute_time() imputes datetime for gaps in GPS data.  Gaps in time may result
+from filtering of invalid GPS data or because the GPS logger goes into 'sleep'
+mode (i.e. Columbus GPS logger). Datetime rows are added to the input data frame
+under the specified datetime column (dt_field) to fill gaps between time stamps.
+The sampling interval is automatically calculated." />
 
 
 
@@ -105,36 +109,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set <code>mapdeck</code> token</h1>
+    <h1>Impute datetime for gaps in GPS data</h1>
     
-    <div class="hidden name"><code>set_token.Rd</code></div>
+    <div class="hidden name"><code>impute_time.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Makes mapbox API token available for <code>mapdeck</code> calls</p>
+    <p><code>impute_time()</code> imputes datetime for gaps in GPS data.  Gaps in time may result
+from filtering of invalid GPS data or because the GPS logger goes into 'sleep'
+mode (i.e. Columbus GPS logger). Datetime rows are added to the input data frame
+under the specified datetime column (<code>dt_field</code>) to fill gaps between time stamps.
+The sampling interval is automatically calculated.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>set_token</span><span class='op'>(</span><span class='va'>token</span><span class='op'>)</span></code></pre></div>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>impute_time</span><span class='op'>(</span><span class='va'>df</span>, dt_field <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>token</th>
-      <td><p>mapbox access token</p></td>
+      <th>df</th>
+      <td><p>a data frame with a datetime field.</p></td>
+    </tr>
+    <tr>
+      <th>dt_field</th>
+      <td><p>character; name of datetime field.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>data frame.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>See (<code><a href='https://rdrr.io/pkg/mapdeck/man/set_token.html'>set_token</a></code>).</p>
-<p>You can request a mapbox acces token <a href='https://docs.mapbox.com/help/how-mapbox-works/access-tokens/'>here</a>.</p>
+    <p><code><a href='impute_coords.html'>impute_coords()</a></code> can be used in conjunction with <code>impute_time()</code> to assign
+latitude and longitude to the added time stamps/rows.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>set_token</span><span class='op'>(</span><span class='st'>"my_mapbox_token"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>impute_time</span><span class='op'>(</span><span class='va'>df</span>, dt_field <span class='op'>=</span> <span class='st'>'Date_Time'</span><span class='op'>)</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='impute_coords.html'>impute_coords</a></span><span class='op'>(</span><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
 </code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

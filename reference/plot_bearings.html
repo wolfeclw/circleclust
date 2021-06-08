@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set mapdeck token — set_token • circleclust</title>
+<title>Plot Bearings — plot_bearings • circleclust</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Set mapdeck token — set_token" />
-<meta property="og:description" content="Makes mapbox API token available for mapdeck calls" />
+<meta property="og:title" content="Plot Bearings — plot_bearings" />
+<meta property="og:description" content="plot_bearings generates an interactive plot of personal sampling locations
+using arrow markers. The direction of the arrows indicate the bearing between
+sequential coordinates. Markers are characterized by activity status (mobile
+vs. stationary)." />
 
 
 
@@ -105,36 +108,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set <code>mapdeck</code> token</h1>
+    <h1>Plot Bearings</h1>
     
-    <div class="hidden name"><code>set_token.Rd</code></div>
+    <div class="hidden name"><code>plot_bearings.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Makes mapbox API token available for <code>mapdeck</code> calls</p>
+    <p><code>plot_bearings</code> generates an interactive plot of personal sampling locations
+using arrow markers. The direction of the arrows indicate the bearing between
+sequential coordinates. Markers are characterized by activity status (mobile
+vs. stationary).</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>set_token</span><span class='op'>(</span><span class='va'>token</span><span class='op'>)</span></code></pre></div>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>plot_bearings</span><span class='op'>(</span><span class='va'>df</span>, dt_field <span class='op'>=</span> <span class='cn'>NULL</span>, divisor <span class='op'>=</span> <span class='cn'>NULL</span>, export_options <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>token</th>
-      <td><p>mapbox access token</p></td>
+      <th>df</th>
+      <td><p>a data frame created by <code><a href='circleclust.html'>circleclust()</a></code> containing column <code>activity_status</code></p></td>
+    </tr>
+    <tr>
+      <th>dt_field</th>
+      <td><p>character; name of datetime field. If specified, the coordinate
+timestamp is displayed in the plot tooltip. Default = NULL.</p></td>
+    </tr>
+    <tr>
+      <th>divisor</th>
+      <td><p>numeric; If specified, the input data frame is reduced by a
+a factor of 1/divisor. A divisor of 2 will omit every other row of the input
+data frame reducing the data by half. This can be useful to visualize large
+data sets. Default = NULL.</p></td>
+    </tr>
+    <tr>
+      <th>export_options</th>
+      <td><p>logical; If TRUE, a drop down menu will be shown in plot
+area with options to export a static image. Default = FALSE.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a <code>highcharter</code> vector plot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>See (<code><a href='https://rdrr.io/pkg/mapdeck/man/set_token.html'>set_token</a></code>).</p>
-<p>You can request a mapbox acces token <a href='https://docs.mapbox.com/help/how-mapbox-works/access-tokens/'>here</a>.</p>
+    <p>See (<code><a href='http://jkunst.com/highcharter/reference/hchart.html'>hchart</a></code>)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>set_token</span><span class='op'>(</span><span class='st'>"my_mapbox_token"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>plot_bearings</span><span class='op'>(</span><span class='va'>df</span>, dt_field <span class='op'>=</span> <span class='cn'>NULL</span>, divisor <span class='op'>=</span> <span class='cn'>NULL</span>, export_options <span class='op'>=</span> <span class='cn'>FALSE</span> <span class='op'>)</span></span>
 <span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
 </code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
