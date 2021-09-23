@@ -10,7 +10,7 @@
 #' @param tzone_gps character; time zone of the Columbus logger. Default = 'UTC'
 #' @param tzone_out character; time zone of the output file. Default = 'America/New_York.'
 #'
-#' @return
+#' @return a tibble.
 #' @export
 #'
 #' @examples

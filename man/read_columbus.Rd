@@ -25,7 +25,7 @@ Default = NULL  'gps_format' must be set to 'NMEA.'}
 \item{tzone_out}{character; time zone of the output file. Default = 'America/New_York.'}
 }
 \value{
-
+a tibble.
 }
 \description{
 \code{read_columbus()} imports latitude and longitude from a Columbus gps logger file.

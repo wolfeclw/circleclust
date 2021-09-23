@@ -6,3 +6,9 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+CRAN
+^.yml
+^.png
+paper
+trash_test
+^.gif
