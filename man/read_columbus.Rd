@@ -9,7 +9,10 @@ read_columbus(
   gps_format = "nmea",
   filter_fix = NULL,
   tzone_gps = "UTC",
-  tzone_out = "America/New_York"
+  tzone_out = "America/New_York",
+  participant_id = NULL,
+  sample_col = NULL,
+  sample_id = NULL
 )
 }
 \arguments{
@@ -23,6 +26,16 @@ Default = NULL  'gps_format' must be set to 'NMEA.'}
 \item{tzone_gps}{character; time zone of the Columbus logger. Default = 'UTC'}
 
 \item{tzone_out}{character; time zone of the output file. Default = 'America/New_York.'}
+
+\item{participant_id}{user defined string to denote a personal identifier.
+This is useful if the GPS unit is deployed during personal sampling.  If specified,
+a new column is created ('ID'). Default is NULL.}
+
+\item{sample_col}{character; user defined character string specifying the name of the
+column to denote sample ID. Default is NULL.}
+
+\item{sample_id}{user defined string to denote sample ID. If assigned, a
+value must also be supplied to \code{sample_col}. Default is NULL.}
 }
 \value{
 a tibble.
