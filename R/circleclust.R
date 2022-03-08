@@ -161,7 +161,7 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
 
     if (!is.null(pl_dist_threshold) & max(d_places$place_grp, na.rm = TRUE) > 1) {
       d_places <- d_places %>%
-        dplyr::mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold, zoo::na.locf(place_grp, na.rm = FALSE),
+        dplyr::mutate(place_grp = ifelse(is.na(place_grp) & pl_distance < pl_dist_threshold & n_pl_lapse_grp < window, zoo::na.locf(place_grp, na.rm = FALSE),
                                          place_grp
         ))
     }

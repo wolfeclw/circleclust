@@ -54,6 +54,11 @@ place_lapse <- function(df) {
       dplyr::select(-c(place_lapse, lag_rownum, rw_diff, break_yn))
 
     c_lapse_join <- suppressMessages(dplyr::full_join(df, d_place_lapse))
+
+    p_laps_grp <- c_lapse_join %>%
+      dplyr::group_by(place_lapse_grp) %>%
+      dplyr::mutate(n_pl_lapse_grp = ifelse(!is.na(place_lapse_grp), dplyr::n(), NA)) %>%
+      dplyr::ungroup()
   }
 }
 
@@ -91,6 +96,7 @@ place_lapse_dist <- function(df) {
       )
 
     p_dist_join <- suppressMessages(dplyr::full_join(df, p_dist))
+
   } else {
     df %>% dplyr::mutate(pl_distance = NA)
   }
@@ -102,7 +108,7 @@ place_lapse_dist <- function(df) {
 # Clusters are reordered if any observations are unclustered.
 
 cluster <- function(df, cluster_threshold = NULL) {
-  d_places <- df %>%
+  d_clust_breaks <- df %>%
     dplyr::filter(!is.na(place_grp)) %>%
     dplyr::mutate(
       lag_rownum = dplyr::lag(r),
@@ -112,7 +118,7 @@ cluster <- function(df, cluster_threshold = NULL) {
     ) %>%
     dplyr::select(-c(clust_break, lag_rownum, rw_diff, clust_break))
 
-  clust_join <- suppressMessages(dplyr::full_join(df, d_places))
+  clust_join <- suppressMessages(dplyr::full_join(df, d_clust_breaks))
 
   if (!is.null(cluster_threshold)) {
     if (!is.numeric(cluster_threshold)) {
