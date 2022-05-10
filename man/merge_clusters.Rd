@@ -2,27 +2,50 @@
 % Please edit documentation in R/merge_clusters.R
 \name{merge_clusters}
 \alias{merge_clusters}
-\title{Aggregate spatiotemporal clusters}
+\title{Spatially merge clusters}
 \usage{
-merge_clusters(df, distance_threshold = 100, dt_field = NULL)
+merge_clusters(
+  df,
+  dt_field = NULL,
+  radius = 100,
+  minPts = 5,
+  borderPoints = TRUE,
+  keep_noise = FALSE,
+  noise_threshold = 1
+)
 }
 \arguments{
-\item{df}{a data frame created by \code{circleclust()} with a \code{cluster_grp} column.
-The data frame must also include datetime, longitude, and latitude columns.}
-
-\item{distance_threshold}{numeric; distance threshold (meters) used to aggregate
-clusters.}
+\item{df}{a data frame created by \code{circleclust()} with a \code{cluster_grp} column and datetime column.}
 
 \item{dt_field}{POSIXct; name of datetime field.}
+
+\item{radius}{numeric; distance threshold (meters) used to aggregate clusters.}
+
+\item{minPts}{numeric; minimum number of points points required in each cluster.}
+
+\item{borderPoints}{logical; should border points be assigned to clusters. Default = TRUE.
+If FALSE, border points are considered noise.}
+
+\item{keep_noise}{logical; should noise points be retained? Default = FALSE.}
+
+\item{noise_threshold}{numeric; threshold value (\%) to determine if noise points should be retained.
+If the percentage of noise points is above this value, noise points are retained and column \code{noise} is
+appended to the output data frame. Noise points are deleted otherwise. This argument is ignored if
+'keep_noise' is set to FALSE.}
 }
 \value{
 a data frame. The original spatiotemporal cluster values are retained
-in a column called \code{spatiotemp_cluster_grp}. New aggregate cluster values are
-listed under \code{cluster_grp}.
+in a column called \code{sp_temporal_cluster}. New spatially merged cluster values are
+listed under \code{spatial_cluster}.
 }
 \description{
-\code{merge_clusters()} aggregates spatiotemporal clusters within a specific distance.
-Essentially, clusters are aggregated spatially and the temporal combonent is removed.
+\code{merge_clusters()} aggregates spatiotemporal clusters within a specified distance using the
+Density-based Spatial Clustering of Applications with Noise (\code{\link[dbscan]{DBSCAN}}) algorithm.
+After merging, the remaining clusters are not temporally unique.
+}
+\details{
+\code{merge_clusters()} spatially combines clusters based on the Euclidean distance between points. Because the Earth is sphere, the calculated
+distances are not exact. See \href{http://wiki.gis.com/wiki/index.php/Decimal_degrees}{here}.
 }
 \examples{
 \dontrun{
