@@ -59,9 +59,9 @@ impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = jit
     d_dist <- suppressMessages(dplyr::full_join(d_lapse_join, lapse_coords_bind))
 
 
-    if (min_dist > distance_threshold) {
+    if (max_dist > distance_threshold) {
       message(paste0(
-        "The minimum distance between missing coordinates (", min_dist,
+        "The maximum distance between missing coordinates (", max_dist,
         ") meters is greater than the distance threshold. \n `lon/lat` for rows with missing GPS information were not imputed."
       ))
 
