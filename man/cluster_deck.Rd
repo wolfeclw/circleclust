@@ -6,8 +6,8 @@
 \usage{
 cluster_deck(
   df,
-  tooltip = "cluster_grp",
-  fill_colour = "cluster_grp",
+  tooltip = "sp_cluster_grp",
+  fill_colour = "sp_cluster_grp",
   elevation = NULL,
   radius = 10,
   palette = "viridis",

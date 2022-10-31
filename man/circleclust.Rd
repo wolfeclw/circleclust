@@ -47,7 +47,7 @@ in each cluster.  If the number of observations in an identified cluster is less
 the observations are retained but not assigned a to a cluster.}
 }
 \value{
-a data frame. New columns \code{cluster_grp} and \code{activity_status} are appended
+a data frame. New columns \code{sp_temporal_cluster} and \code{activity_status} are appended
 to the input data frame.
 }
 \description{

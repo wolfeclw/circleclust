@@ -15,7 +15,7 @@ merge_clusters(
 )
 }
 \arguments{
-\item{df}{a data frame created by \code{circleclust()} with a \code{cluster_grp} column and datetime column.}
+\item{df}{a data frame created by \code{circleclust()} with a \code{sp_temporal_cluster} column and datetime column.}
 
 \item{dt_field}{POSIXct; name of datetime field.}
 

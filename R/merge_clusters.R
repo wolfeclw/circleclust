@@ -9,7 +9,7 @@
 #' distances are not exact. See [here](http://wiki.gis.com/wiki/index.php/Decimal_degrees).
 
 #'
-#' @param df a data frame created by `circleclust()` with a `cluster_grp` column and datetime column.
+#' @param df a data frame created by `circleclust()` with a `sp_temporal_cluster` column and datetime column.
 #' @param dt_field POSIXct; name of datetime field.
 #' @param radius numeric; distance threshold (meters) used to aggregate clusters.
 #' @param minPts numeric; minimum number of points points required in each cluster.
@@ -35,12 +35,12 @@
 
 merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1) {
 
-  if (!'cluster_grp' %in% names(df)) {
-    stop('Column `cluster_grp` is not in the input data frame. Did you use `circleclust()` to identify periods of stationary activity?',
+  if (!'sp_temporal_cluster' %in% names(df)) {
+    stop('Column `sp_temporal_cluster` is not in the input data frame. Did you use `circleclust()` to identify periods of stationary activity?',
          call. = FALSE)
   }
 
-  if (sum(is.na(df$cluster_grp)) == nrow(df)) {
+  if (sum(is.na(df$sp_temporal_cluster)) == nrow(df)) {
     stop('The input data frame does not contain periods of stationary activity/clustered coordinates.',
          call. = FALSE)
   }
@@ -51,7 +51,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
     stop()
   }
 
-  if (max(df$cluster_grp, na.rm = TRUE) == 1) {
+  if (max(df$sp_temporal_cluster, na.rm = TRUE) == 1) {
     warning('The input data frame only has 1 identified cluster. Execution halted--returning the input data frame.',
             call. = FALSE)
     stop_quietly()
@@ -68,7 +68,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
 
   d_xy <- df %>%
     dplyr::filter(!is.na(lat) | !is.na(lon)) %>%
-    dplyr::filter(!is.na(cluster_grp))
+    dplyr::filter(!is.na(sp_temporal_cluster))
 
   d_xy_lonlat <- d_xy %>%
     dplyr::select(lon, lat)
@@ -79,12 +79,11 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
   d_mc <- suppressMessages(dplyr::left_join(df, d_xy))
 
   d_mc <- d_mc %>%
-    dplyr::rename(spatial_cluster = db_cluster,
-                  sp_temporal_cluster = cluster_grp) %>%
+    dplyr::rename(spatial_cluster = db_cluster) %>%
     dplyr::arrange(.[[dt_field]])
 
-  n_spatio <- max(table(d_mc$sp_temporal_cluster), na.rm = TRUE)
-  n_db <- max(table(d_mc$spatial_cluster),  na.rm = TRUE)
+  n_spatio <- length(table(d_mc$sp_temporal_cluster))
+  n_db <- length(table(d_mc$spatial_cluster))
 
   if (n_spatio > n_db) {
 
@@ -136,7 +135,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
     message(crayon::cyan('Clusters were not merged. Multiple clusters do not exist within the specified radius.'))
 
     d_mc <- d_mc %>%
-      dplyr::rename(cluster_grp = sp_temporal_cluster) %>%
+      # dplyr::rename(cluster_grp = sp_temporal_cluster) %>%
       dplyr::select(-spatial_cluster)
   }
   d_mc %>%

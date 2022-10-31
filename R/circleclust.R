@@ -44,7 +44,7 @@
 #' the observations are retained but not assigned a to a cluster.
 #'
 #'
-#' @return a data frame. New columns `cluster_grp` and `activity_status` are appended
+#' @return a data frame. New columns `sp_temporal_cluster` and `activity_status` are appended
 #' to the input data frame.
 #' @export
 #'
@@ -168,14 +168,14 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
 
     d_clusters <- cluster(d_places, cluster_threshold = cluster_threshold)
 
-    if (is.na(d_clusters$cluster_grp[window / 2 - 1])) {
-      c_grp1 <- d_clusters$cluster_grp[window / 2]
-      d_clusters$cluster_grp[1:(window / 2 - 1)] <- c_grp1
+    if (is.na(d_clusters$sp_temporal_cluster[window / 2 - 1])) {
+      c_grp1 <- d_clusters$sp_temporal_cluster[window / 2]
+      d_clusters$sp_temporal_cluster[1:(window / 2 - 1)] <- c_grp1
     }
   } else if (sum(!is.na(df$lat) > 0) & sum(d_break$move_break, na.rm = TRUE) == 0) {
     d_clusters <- d_break %>%
       dplyr::select(-c(move_break, r)) %>%
-      dplyr::mutate(cluster_grp = NA)
+      dplyr::mutate(sp_temporal_cluster = NA)
     message(paste0(
       "NO CLUSTERS IDENTIFIED - the individual may have been in transit",
       "\n for the duration of the sampling session."
@@ -195,14 +195,14 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
   } else if (sum(is.na(df$lat)) == nrow(df)) {
     d_clusters <- d_clusters %>% dplyr::mutate(
       circvar = NA,
-      cluster_grp = NA
+      sp_temporal_cluster = NA
     )
   }
 
   d_clusters <- d_clusters %>%
     dplyr::mutate(activity_status = dplyr::case_when(
-      !is.na(cluster_grp) ~ "static",
-      is.na(cluster_grp) & !is.na(lat) ~ "mobile"
+      !is.na(sp_temporal_cluster) ~ "static",
+      is.na(sp_temporal_cluster) & !is.na(lat) ~ "mobile"
     ))
   d_clusters
 }

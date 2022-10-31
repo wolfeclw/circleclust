@@ -114,7 +114,7 @@ cluster <- function(df, cluster_threshold = NULL) {
       lag_rownum = dplyr::lag(r),
       rw_diff = r - lag_rownum,
       clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
-      cluster_grp = cumsum(clust_break)
+      sp_temporal_cluster = cumsum(clust_break)
     ) %>%
     dplyr::select(-c(clust_break, lag_rownum, rw_diff, clust_break))
 
@@ -126,8 +126,8 @@ cluster <- function(df, cluster_threshold = NULL) {
     }
 
     dc <- clust_join %>%
-      dplyr::group_by(cluster_grp) %>%
-      dplyr::mutate(cluster_nrow = ifelse(is.na(cluster_grp), NA, dplyr::n())) %>%
+      dplyr::group_by(sp_temporal_cluster) %>%
+      dplyr::mutate(cluster_nrow = ifelse(is.na(sp_temporal_cluster), NA, dplyr::n())) %>%
       dplyr::ungroup()
 
     clust_n <- dc %>%
@@ -146,7 +146,7 @@ cluster <- function(df, cluster_threshold = NULL) {
     if (rm_clust > 0) {
       dc[!is.na(dc$cluster_nrow) & dc$cluster_nrow < cluster_threshold, "place_grp"] <- NA
 
-      dc_rm <- dc[, !grepl("cluster_grp", colnames(dc))]
+      dc_rm <- dc[, !grepl("sp_temporal_cluster", colnames(dc))]
 
       reorder_clust <- dc_rm %>%
         dplyr::filter(!is.na(place_grp)) %>%
@@ -154,7 +154,7 @@ cluster <- function(df, cluster_threshold = NULL) {
           lag_rownum = dplyr::lag(r),
           rw_diff = r - lag_rownum,
           clust_break = ifelse(rw_diff > 1 | is.na(lag_rownum), 1, 0),
-          cluster_grp = cumsum(clust_break)
+          sp_temporal_cluster = cumsum(clust_break)
         ) %>%
         dplyr::select(-c(clust_break, lag_rownum, rw_diff, clust_break))
 
