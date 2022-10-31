@@ -50,7 +50,7 @@ distances are not exact. See \href{http://wiki.gis.com/wiki/index.php/Decimal_de
 \examples{
 \dontrun{
 
-merge_clusters(df,
-  distance_threshold = 100, dt_field = NULL)
+merge_clusters(
+     df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1)
 }
 }

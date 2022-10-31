@@ -47,7 +47,7 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
       call. = FALSE
     )
   } else if (is.unsorted(df[[dt_field]])) {
-    stop(paste0("The input data frame should be sorted by ", {{ dt_field }}, "."),
+    stop(paste0("The input data frame should be sorted by ascending ", {{ dt_field }}, "."),
       call. = FALSE
     )
   }

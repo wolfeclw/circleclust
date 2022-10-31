@@ -45,8 +45,16 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
          call. = FALSE)
   }
 
+  stop_quietly <- function() {
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    stop()
+  }
+
   if (max(df$cluster_grp, na.rm = TRUE) == 1) {
-    stop('The input data frame only has 1 identified cluster.')
+    warning('The input data frame only has 1 identified cluster. Execution halted--returning the input data frame.',
+            call. = FALSE)
+    stop_quietly()
   }
 
   if (is.null(dt_field)) {
@@ -75,8 +83,8 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
                   sp_temporal_cluster = cluster_grp) %>%
     dplyr::arrange(.[[dt_field]])
 
-  n_spatio <- max(d_mc$sp_temporal_cluster, na.rm = TRUE)
-  n_db <- max(d_mc$spatial_cluster,  na.rm = TRUE)
+  n_spatio <- max(table(d_mc$sp_temporal_cluster), na.rm = TRUE)
+  n_db <- max(table(d_mc$spatial_cluster),  na.rm = TRUE)
 
   if (n_spatio > n_db) {
 
