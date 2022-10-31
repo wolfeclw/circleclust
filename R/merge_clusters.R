@@ -30,7 +30,8 @@
 #' \dontrun{
 #'
 #' merge_clusters(
-#'      df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1)
+#'      df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE,
+#'      keep_noise = FALSE, noise_threshold = 1)
 #' }
 
 merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1) {

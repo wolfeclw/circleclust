@@ -58,7 +58,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
   }
 
   no_num_cols <- dplyr::select_if(df, ~ !is.numeric(.)) %>%
-    dplyr::select(-{{ dt_field }}) %>%
+    dplyr::select(-.data[[dt_field]]) %>%
     purrr::map(., unique)
 
   no_num_cols_len <- no_num_cols %>%
@@ -74,16 +74,19 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
 
     char_keep <- no_num_cols[unq_lgl] #[1:nrow(d_agg), ]
     rm_cols <- no_num_cols[!unq_lgl] %>% names()
-  }
-
-  if (any(length(no_num_cols_len)) != 0) {
-    message(
-      "Column(s) `", paste(rm_cols, collapse = ", "),
-      "` are non-numeric and contain more than one unique value. These columns were \n removed during aggregation."
-    )
 
     d_agg <- dplyr::bind_cols(char_keep, d_agg)
     d_agg <- dplyr::relocate(d_agg, .data[[dt_field]])
+  }
+
+  if (sum(no_num_cols_len > 0)) {
+
+    cp <- ifelse(length(rm_cols) > 1, 'Columns ', 'Column ')
+    is_are <- ifelse(length(rm_cols) > 1, ' are', ' is')
+    message(
+      paste0(cp, paste0('`', rm_cols, '`', collapse = ", "), is_are,
+      " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
+    )
   }
 
   d_agg

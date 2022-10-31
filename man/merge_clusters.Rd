@@ -51,6 +51,7 @@ distances are not exact. See \href{http://wiki.gis.com/wiki/index.php/Decimal_de
 \dontrun{
 
 merge_clusters(
-     df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1)
+     df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE,
+     keep_noise = FALSE, noise_threshold = 1)
 }
 }

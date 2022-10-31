@@ -36,7 +36,7 @@ get_places <- function(df, cluster_col = 'sp_temporal_cluster', nested = TRUE, g
   }
 
   if (!cluster_col %in% names(df)) {
-    stop(paste0('Column `', cluster_col, '` is not in the input data frame. Did you use `circleclust()` to identify periods of stationary activity?'),
+    stop(paste0('Column `', cluster_col, '` is not in the input data frame. Did you use `circleclust()` or `merge_clusters()` to identify periods of stationary activity?'),
          call. = FALSE)
   }
 
@@ -83,8 +83,6 @@ get_places <- function(df, cluster_col = 'sp_temporal_cluster', nested = TRUE, g
     #                 place_duration = round(as.numeric(lubridate::as.duration(se_interval), 'hours'), digits = 1)) %>%
     #   dplyr::relocate(place_duration, .after = end_time) %>%
     #   dplyr::select(-se_interval)
-
-
 
     message(paste0('Measurements appear to have been recorded at a ', time_unit,
                    ' second sampling interval.'))
