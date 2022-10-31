@@ -8,7 +8,7 @@ test_that("correct clusters", {
 
   d$mobile <- ifelse(d$activity_status == "mobile", 1, 0)
 
-  clusters <- max(d$cluster_grp, na.rm = TRUE)
+  clusters <- max(d$sp_temporal_cluster, na.rm = TRUE)
 
   expect_equal(clusters, 8)
   expect_equal(sum(d$mobile), 814)

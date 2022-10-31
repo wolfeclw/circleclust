@@ -24,6 +24,19 @@
 #'
 impute_time <- function(df, dt_field = NULL) {
 
+  if (is.null(dt_field)) {
+    stop("`dt_field` has not been assigned a value.", call. = FALSE)
+  } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
+    c_dt_field <- class(df[[dt_field]])
+    stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
+         call. = FALSE
+    )
+  } else if (is.unsorted(df[[dt_field]])) {
+    stop(paste0("The input data frame should be sorted by ascending ", {{ dt_field }}, "."),
+         call. = FALSE
+    )
+  }
+
   time_unit <- floor(quantile(diff(df[[dt_field]]), 0.75))
   units(time_unit) <- "secs"
   time_unit <- as.numeric(time_unit)

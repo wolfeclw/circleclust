@@ -6,7 +6,7 @@ test_that("imputed coords", {
     impute_coords("Date_Time", distance_threshold = 0)
 
   d_some <- zoo_trip %>%
-    impute_coords("Date_Time", distance_threshold = 3)
+    impute_coords("Date_Time", distance_threshold = 30)
 
   imputed <- sum(d_imputed$imputed_coord)
   imputed_zero <- sum(d_zero$imputed_coord)
@@ -14,5 +14,5 @@ test_that("imputed coords", {
 
   expect_equal(imputed, 1191)
   expect_equal(imputed_zero, 0)
-  expect_equal(imputed_some, 1182)
+  expect_equal(imputed_some, 1191)
 })
