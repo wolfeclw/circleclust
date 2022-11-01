@@ -37,6 +37,7 @@ Imports:
     highcharter,
     viridis,
     crayon,
-    dbscan
+    dbscan,
+    hms
 Depends: 
     R (>= 2.10)

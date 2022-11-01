@@ -45,7 +45,3 @@ To install `circleclust`, use the following code:
 ``` r
 devtools::install_github("wolfeclw/circleclust")
 ```
-
-#### Related Packages
-
-A significant portion of this codebase can be found in the [`pufpR`](https://github.com/wolfeclw/pufpR) package. `pufpR` is a collection of functions built to import, wrangle, and analyze data recorded by the Enmont personal ultrafine particle counter (PUFP).
