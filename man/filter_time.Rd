@@ -4,7 +4,14 @@
 \alias{filter_time}
 \title{Filter time series data by a specific time interval}
 \usage{
-filter_time(df, t_var, t1, t2, span_days = FALSE, summary_tbl = TRUE)
+filter_time(
+  df,
+  t_var = NULL,
+  t1 = NULL,
+  t2 = NULL,
+  span_days = FALSE,
+  summary_tbl = TRUE
+)
 }
 \arguments{
 \item{df}{a data frame with a datetime  or time column.}
@@ -30,7 +37,8 @@ to date, time series data can easily be filtered across multiple days.
 }
 \examples{
 
-  filter_time(zoo_trip, t_var = 'Date_Time', t1 = '13:00:00', t2 = '14:30:00', summary_tbl = TRUE, span_days = TRUE)
+  filter_time(zoo_trip, t_var = 'Date_Time', t1 = '13:00:00', t2 = '14:30:00',
+              summary_tbl = TRUE, span_days = TRUE)
 
 
 }

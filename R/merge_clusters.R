@@ -34,7 +34,8 @@
 #'      keep_noise = FALSE, noise_threshold = 1)
 #' }
 
-merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1) {
+merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
+                           borderPoints = TRUE, keep_noise = FALSE, noise_threshold = 1) {
 
   if (!'sp_temporal_cluster' %in% names(df)) {
     stop('Column `sp_temporal_cluster` is not in the input data frame. Did you use `circleclust()` to identify periods of stationary activity?',
@@ -84,21 +85,27 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
     dplyr::arrange(.[[dt_field]])
 
   n_spatio <- length(table(d_mc$sp_temporal_cluster))
-  n_db <- length(table(d_mc$spatial_cluster))
+
+  db_table <- table(d_xy$db_cluster)
+  noise_lgl <- '0' %in% names(db_table)
+  noise_rm <- names(db_table) != '0'
+  n_db <- length(db_table[noise_rm])
+
+
+  if (keep_noise == FALSE) {
+    d_mc <- d_mc %>%
+      dplyr::filter(!spatial_cluster == 0 | is.na(spatial_cluster))
+  }
 
   if (n_spatio > n_db) {
 
     message(crayon::green(paste0('The number of spatiotemporal clusters was reduced from ', n_spatio, ' to ', n_db, ' spatial clusters.')))
 
-
-    noise_table <- table(d_xy$db_cluster)
-    noise_lgl <- '0' %in% names(noise_table)
-
     if (noise_lgl) {
 
-      n_noise <- noise_table[['0']]
+      n_noise <- db_table[['0']]
       message(crayon::cyan(paste(n_noise,
-                                  'coordinates were classified as "noise."')))
+                                 'coordinates were classified as "noise."')))
     } else {
       message(crayon::cyan('Noise points were not detected.'))
     }
@@ -112,7 +119,8 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
           paste0('The percentage of noise coordinates (', pct_noise, '%) was below the threshold value (',
                  noise_threshold, '%), and these observations were deleted.')))
 
-        d_mc <- dplyr::filter(d_mc, spatial_cluster != 0 | is.na(spatial_cluster))
+        d_mc <-  d_mc %>%
+          dplyr::filter(!spatial_cluster == 0 | is.na(spatial_cluster))
 
       } else {
 
@@ -128,17 +136,22 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5, border
           dplyr::mutate(spatial_cluster = dplyr::if_else(is.na(nc), as.numeric(spatial_cluster), nc)) %>%
           dplyr::select(-nc)
 
-        d_mc <- dplyr::bind_rows(d_mc, mc_noise) %>%
-          dplyr::filter(spatial_cluster != 0 | is.na(spatial_cluster))
+        d_mc <- dplyr::bind_rows(d_mc, mc_noise)
+        d_mc <- d_mc %>%
+          dplyr::filter(!spatial_cluster == 0 | is.na(spatial_cluster))
+
+        message(crayon::cyan(paste0('Noise coordinates were retained and assigned to spatial cluster(s): ',
+                                    paste(unique(mc_noise$spatial_cluster), collapse = ' '), '.')))
       }
     }
   } else {
     message(crayon::cyan('Clusters were not merged. Multiple clusters do not exist within the specified radius.'))
 
     d_mc <- d_mc %>%
-      # dplyr::rename(cluster_grp = sp_temporal_cluster) %>%
       dplyr::select(-spatial_cluster)
   }
   d_mc %>%
     dplyr::arrange(.[[dt_field]])
+
+  d_mc
 }

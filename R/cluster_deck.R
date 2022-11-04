@@ -26,7 +26,7 @@
 #'   elevation = NULL, radius = 10, palette = "viridis", legend = TRUE
 #' )
 #' }
-cluster_deck <- function(df, tooltip = "sp_cluster_grp", fill_colour = "sp_cluster_grp", elevation = NULL,
+cluster_deck <- function(df, tooltip = "sp_temporal_cluster", fill_colour = "sp_temporal_cluster", elevation = NULL,
                          radius = 10, palette = "viridis", legend = TRUE) {
   df_class <- class(df)
 

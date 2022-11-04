@@ -160,7 +160,7 @@ cluster <- function(df, cluster_threshold = NULL) {
 
       d_clust <- suppressMessages(dplyr::full_join(dc_rm, reorder_clust))
       d_clust <- d_clust %>%
-        dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, n_pl_lapse_grp, clustered_coord, pl_distance, cluster_nrow))
+        dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance, cluster_nrow, n_pl_lapse_grp))
 
       message(paste(
         "A total of", rm_clust,
@@ -170,7 +170,7 @@ cluster <- function(df, cluster_threshold = NULL) {
     }
   } else {
     d_clust <- clust_join %>%
-      dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, n_pl_lapse_grp, clustered_coord, pl_distance))
+      dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance, n_pl_lapse_grp))
   }
   d_clust
 }
