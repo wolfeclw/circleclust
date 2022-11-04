@@ -32,11 +32,11 @@ filter_time <- function(df, t_var = NULL, t1 = NULL, t2 = NULL, span_days = FALS
   }
 
   if (is.null(t1)) {
-    stop('`t_1` must e assigned a value.')
+    stop('`t1` must e assigned a value.')
   }
 
-  if (is.null(t_2)) {
-    stop('`t_2` must e assigned a value.')
+  if (is.null(t2)) {
+    stop('`t2` must e assigned a value.')
   }
 
   tc <- class(df[[t_var]])
