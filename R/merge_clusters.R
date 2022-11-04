@@ -47,18 +47,6 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
          call. = FALSE)
   }
 
-  stop_quietly <- function() {
-    opt <- options(show.error.messages = FALSE)
-    on.exit(options(opt))
-    stop()
-  }
-
-  if (max(df$sp_temporal_cluster, na.rm = TRUE) == 1) {
-    warning('The input data frame only has 1 identified cluster. Execution halted--returning the input data frame.',
-            call. = FALSE)
-    stop_quietly()
-  }
-
   if (is.null(dt_field)) {
     stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
@@ -144,6 +132,20 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
                                     paste(unique(mc_noise$spatial_cluster), collapse = ' '), '.')))
       }
     }
+  } else if (max(df$sp_temporal_cluster, na.rm = TRUE) == 1) {
+
+    stop_quietly <- function() {
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      return(df)
+      stop()
+    }
+
+    warning('The input data frame only has 1 identified cluster. Execution halted--returning the input data frame.',
+            call. = FALSE)
+
+    stop_quietly()
+
   } else {
     message(crayon::cyan('Clusters were not merged. Multiple clusters do not exist within the specified radius.'))
 
