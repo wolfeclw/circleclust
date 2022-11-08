@@ -1,6 +1,6 @@
 Package: circleclust
 Title: Spatiotemporal Clustering for Personal Location Data
-Version: 0.0.0.9000
+Version: 3.0
 Authors@R: 
     person(given = "Chris",
            family = "Wolfe",
