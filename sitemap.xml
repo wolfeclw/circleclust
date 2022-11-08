@@ -25,6 +25,9 @@
     <loc>/reference/dt_aggregate.html</loc>
   </url>
   <url>
+    <loc>/reference/filter_time.html</loc>
+  </url>
+  <url>
     <loc>/reference/friendship.html</loc>
   </url>
   <url>
@@ -68,5 +71,8 @@
   </url>
   <url>
     <loc>/reference/zoo_trip.html</loc>
+  </url>
+  <url>
+    <loc>/todo.html</loc>
   </url>
 </urlset>
