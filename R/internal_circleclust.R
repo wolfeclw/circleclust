@@ -120,15 +120,19 @@ cluster <- function(df, cluster_threshold = NULL) {
 
   clust_join <- suppressMessages(dplyr::full_join(df, d_clust_breaks))
 
+  dc <- clust_join %>%
+    dplyr::group_by(sp_temporal_cluster) %>%
+    dplyr::mutate(cluster_nrow = ifelse(is.na(sp_temporal_cluster), NA, dplyr::n())) %>%
+    dplyr::ungroup()
+
+  d_clust <- dc %>% dplyr::select(-c(
+    move_break, r, place_grp,
+    place_lapse_grp, pl_distance, cluster_nrow, clustered_coord, n_pl_lapse_grp))
+
   if (!is.null(cluster_threshold)) {
     if (!is.numeric(cluster_threshold)) {
       stop("Invalid 'type' of argument assigned to 'cluster_threshold.' Expecting a numeric value.", call. = FALSE)
     }
-
-    dc <- clust_join %>%
-      dplyr::group_by(sp_temporal_cluster) %>%
-      dplyr::mutate(cluster_nrow = ifelse(is.na(sp_temporal_cluster), NA, dplyr::n())) %>%
-      dplyr::ungroup()
 
     clust_n <- dc %>%
       dplyr::group_by(cluster_nrow) %>%
@@ -137,11 +141,6 @@ cluster <- function(df, cluster_threshold = NULL) {
       .$n_max
 
     rm_clust <- sum(clust_n < cluster_threshold)
-
-    d_clust <- dc %>% dplyr::select(-c(
-      move_break, r, place_grp,
-      place_lapse_grp, pl_distance, cluster_nrow
-    ))
 
     if (rm_clust > 0) {
       dc[!is.na(dc$cluster_nrow) & dc$cluster_nrow < cluster_threshold, "place_grp"] <- NA
@@ -160,7 +159,7 @@ cluster <- function(df, cluster_threshold = NULL) {
 
       d_clust <- suppressMessages(dplyr::full_join(dc_rm, reorder_clust))
       d_clust <- d_clust %>%
-        dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance, cluster_nrow, n_pl_lapse_grp))
+        dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, pl_distance, cluster_nrow))
 
       message(paste(
         "A total of", rm_clust,
@@ -170,7 +169,7 @@ cluster <- function(df, cluster_threshold = NULL) {
     }
   } else {
     d_clust <- clust_join %>%
-      dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, clustered_coord, pl_distance, n_pl_lapse_grp))
+      dplyr::select(-c(move_break, r, place_lapse_grp, place_grp, pl_distance))
   }
   d_clust
 }
