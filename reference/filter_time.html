@@ -22,7 +22,7 @@ to date, time series data can easily be filtered across multiple days."><!-- mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">circleclust</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0</span>
       </span>
     </div>
 
@@ -97,31 +97,7 @@ number of observations occurring in each hour of the filtering interval.</p></dd
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu">filter_time</span><span class="op">(</span><span class="va">zoo_trip</span>, t_var <span class="op">=</span> <span class="st">'Date_Time'</span>, t1 <span class="op">=</span> <span class="st">'13:00:00'</span>, t2 <span class="op">=</span> <span class="st">'14:30:00'</span>,</span></span>
 <span class="r-in"><span>              summary_tbl <span class="op">=</span> <span class="cn">TRUE</span>, span_days <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning observations recorded between 13:00:00 and 14:30:00.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Check the output data frame.  Times outside the requested time interval were returned.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;"> If the requested time interval does not include midnight,`span_days should be set to `FALSE`. </span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $d_filter_time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,217 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Date_Time             lat   lon</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2020-07-25 <span style="color: #949494;">13:01:00</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2020-07-25 <span style="color: #949494;">13:01:01</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2020-07-25 <span style="color: #949494;">13:01:02</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2020-07-25 <span style="color: #949494;">13:01:03</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2020-07-25 <span style="color: #949494;">13:01:04</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2020-07-25 <span style="color: #949494;">13:01:05</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2020-07-25 <span style="color: #949494;">13:01:06</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2020-07-25 <span style="color: #949494;">13:01:07</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2020-07-25 <span style="color: #949494;">13:01:08</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2020-07-25 <span style="color: #949494;">13:01:09</span>  39.1 -<span style="color: #BB0000;">84.5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10,207 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hour_summary_tbl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:00:00 14:00:00 15:00:00 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3540     3599     3078 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in filter_time(zoo_trip, t_var = "Date_Time", t1 = "13:00:00", t2 = "14:30:00",     summary_tbl = TRUE, span_days = TRUE):</span> could not find function "filter_time"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
