@@ -12,11 +12,11 @@ The `circleclust()` function classifies coordinates into distinct spatiotemporal
 
 The map below shows personal location data recorded while talking a stroll through the Cincinnati Zoo and Botanical Gardens.  Purple dots represent periods of mobile activity and yellow dots represent periods of static activity at various exhibits.
 
-![](./zoo_deck.gif)
+![](./man/figures/zoo_deck.gif)
 
 Plotting the bearing (azimuth) between sequential points gives an under the hood look at how the algorithm classifies coordinates. We see a higher degree of variability in the bearings classified as 'static', while the purple 'mobile' bearings demonstrate a consistent trajectory.
 
-![](./hc_zoo.png)
+![](./man/figures/hc_zoo.png)
 
 #### A typical workflow looks something like this:
 
