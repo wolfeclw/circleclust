@@ -81,7 +81,7 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
 
   message(crayon::green(paste0('Measurements appear to have been recorded at a ', time_unit,
                                ' second sampling interval.')))
-  message(crayon::cyan(paste0('A total of ', length(l_tlapse), ' lapses in time were identified.')))
+  message(crayon::cyan(paste0('A total of ', length(l_tlapse), ' datetime lapses in time were identified.')))
   message(crayon::cyan(paste0('A total of ', n_imputed, ' datetime rows (', dur_imputed, ' mins) were imputed.')))
 
   d_imputed <- suppressMessages(dplyr::full_join(df, d_time_imputed))

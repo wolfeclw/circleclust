@@ -2,7 +2,7 @@
 
 
 impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = jitter_amount,
-                               show_lapse_distance = TRUE) {
+                               show_lapse_distance = FALSE) {
   d_r <- df %>%
     dplyr::mutate(r = dplyr::row_number())
 
@@ -98,19 +98,20 @@ impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, ji
     min_dist <- min(distances)
     max_dist <- max(distances)
 
-    message(paste0(
+    message(crayon::cyan(paste0('A total of ', n_imputed, ' `lat/lon` lapses were identified.')))
+    message(crayon::cyan(paste0(
       "The minimum and maximum distance between lapses is ", min_dist, " and ",
       max_dist, " meters, respectively."
-    ))
+    )))
 
     wch_gt_threshold <- which(distances > distance_threshold)
     n_gt_threshold <- length(wch_gt_threshold)
 
     if (n_gt_threshold > 0 & n_gt_threshold == length(distances)) {
-      message(paste0(
+      message(crayon::cyan(paste0(
         "The minimum distance between for all missing coordinates (", min_dist,
         ") meters is greater than the distance threshold (", distance_threshold, ") meters. \n `lon/lat` for rows with missing GPS information were not imputed."
-      ))
+      )))
     } else if (n_gt_threshold > 0) {
       message(crayon::red(paste0('  - A lapse (', distances[wch_gt_threshold],
                                  ' meters) greater than the distance threshold was identified. `lon/lat` for these rows were not imputed. \n')))
