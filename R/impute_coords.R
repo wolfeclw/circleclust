@@ -61,7 +61,7 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
     df %>% dplyr::mutate(imputed_coord = 0)
   } else if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
     stop(paste("To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,",
-      "and `open_lapse_lenth`.",
+      "and `open_lapse_length`.",
       sep = "\n"
     ),
     call. = FALSE
@@ -73,7 +73,7 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
       open_lapse_length = open_lapse_length
     )
   } else {
-    impute_coords_dist(df,
+    impute_coords_dist(df, dt_field = dt_field,
       distance_threshold = distance_threshold, jitter_amount = jitter_amount,
       show_lapse_distance = show_lapse_distance
     )

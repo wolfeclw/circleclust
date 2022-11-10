@@ -1,8 +1,8 @@
 ##### INTERNAL IMPUTE FUNCTIONS
 
 
-impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = jitter_amount,
-                               show_lapse_distance = show_lapse_distance) {
+impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = jitter_amount,
+                               show_lapse_distance = TRUE) {
   d_r <- df %>%
     dplyr::mutate(r = dplyr::row_number())
 
@@ -47,78 +47,93 @@ impute_coords_dist <- function(df, distance_threshold = 100, jitter_amount = jit
       dplyr::mutate(
         lapse_grp = dplyr::row_number(),
         lapse_distance = round(geosphere::distHaversine(cbind(lon...1, lat...2), cbind(lon...3, lat...4),
-          r = 6378137
+                                                        r = 6378137
         ),
         digits = 2
         )
       ) %>%
       dplyr::select(lapse_grp, lapse_distance)
 
-    min_dist <- min(lapse_coords_bind$lapse_distance)
-    max_dist <- max(lapse_coords_bind$lapse_distance)
     d_dist <- suppressMessages(dplyr::full_join(d_lapse_join, lapse_coords_bind))
 
+    d_coords_fill <- d_dist %>%
+      dplyr::mutate(
+        impute_lat = ifelse(is.na(lat) & lapse_distance < distance_threshold,
+                            zoo::na.locf(lat, na.rm = FALSE), lat
+        ),
+        impute_lon = ifelse(is.na(lon) & lapse_distance < distance_threshold,
+                            zoo::na.locf(lon, na.rm = FALSE), lon
+        )
+      ) %>%
+      dplyr::filter(!is.na(lapse_grp) & !is.na(impute_lat)) %>%
+      sf::st_as_sf(coords = c("impute_lon", "impute_lat"), crs = 4326)
 
-    if (max_dist > distance_threshold) {
-      message(paste0(
-        "The maximum distance between missing coordinates (", max_dist,
-        ") meters is greater than the distance threshold. \n `lon/lat` for rows with missing GPS information were not imputed."
-      ))
+    d_jitter <- sf::st_jitter(d_coords_fill, amount = jitter_amount)
+    d_jitter <- d_jitter %>%
+      dplyr::mutate(
+        jlat = sf::st_coordinates(.)[, 2],
+        jlon = sf::st_coordinates(.)[, 1]
+      ) %>%
+      sf::st_drop_geometry()
 
-      d_dist_imputed <- d_dist %>%
-        dplyr::select(-c(lapse_grp, r)) %>%
-        dplyr::mutate(imputed_coord = 0)
-    } else {
-      d_coords_fill <- d_dist %>%
-        dplyr::mutate(
-          impute_lat = ifelse(is.na(lat) & lapse_distance < distance_threshold,
-            zoo::na.locf(lat, na.rm = FALSE), lat
-          ),
-          impute_lon = ifelse(is.na(lon) & lapse_distance < distance_threshold,
-            zoo::na.locf(lon, na.rm = FALSE), lon
-          )
-        ) %>%
-        dplyr::filter(!is.na(lapse_grp) & !is.na(impute_lat)) %>%
-        sf::st_as_sf(coords = c("impute_lon", "impute_lat"), crs = 4326)
+    jitter_join <- suppressMessages(dplyr::full_join(d_dist, d_jitter))
 
-      d_jitter <- sf::st_jitter(d_coords_fill, amount = jitter_amount)
-      d_jitter <- d_jitter %>%
-        dplyr::mutate(
-          jlat = sf::st_coordinates(.)[, 2],
-          jlon = sf::st_coordinates(.)[, 1]
-        ) %>%
-        sf::st_drop_geometry()
+    l_dist_imputed <- dplyr::group_split(jitter_join, lapse_grp) %>%
+      purrr::map(., ~dplyr::mutate(.,
+                                   imputed_coord = ifelse(!is.na(jlat) & lapse_distance < distance_threshold, 1, 0),
+                                   lat = ifelse(is.na(lat) & !is.na(jlat) & lapse_distance < distance_threshold, jlat, lat),
+                                   lon = ifelse(is.na(lon) & !is.na(jlon) & lapse_distance < distance_threshold, jlon, lon)))
 
-      jitter_join <- suppressMessages(dplyr::full_join(d_dist, d_jitter))
 
-      d_dist_imputed <- jitter_join %>%
-        dplyr::mutate(
-          imputed_coord = ifelse(!is.na(jlat), 1, 0),
-          lat = ifelse(is.na(jlat), lat, jlat),
-          lon = ifelse(is.na(jlon), lon, jlon)
-        ) %>%
-        dplyr::select(-c(r, jlat, jlon, lapse_grp))
-    }
+    distances <- l_dist_imputed %>%
+      purrr::map_dbl(., ~unique(.$lapse_distance)) %>%
+      na.omit() %>%
+      as.numeric()
+
+    d_dist_imputed <- dplyr::bind_rows(l_dist_imputed) %>%
+      dplyr::arrange(.[[dt_field]]) %>%
+      dplyr::select(-c(r, lapse_grp, jlat, jlon))
+
+    n_imputed <- sum(distances < distance_threshold)
+    min_dist <- min(distances)
+    max_dist <- max(distances)
 
     message(paste0(
       "The minimum and maximum distance between lapses is ", min_dist, " and ",
       max_dist, " meters, respectively."
     ))
+
+    wch_gt_threshold <- which(distances > distance_threshold)
+    n_gt_threshold <- length(wch_gt_threshold)
+
+    if (n_gt_threshold > 0 & n_gt_threshold == length(distances)) {
+      message(paste0(
+        "The minimum distance between for all missing coordinates (", min_dist,
+        ") meters is greater than the distance threshold (", distance_threshold, ") meters. \n `lon/lat` for rows with missing GPS information were not imputed."
+      ))
+    } else if (n_gt_threshold > 0) {
+      message(crayon::red(paste0('  - A lapse (', distances[wch_gt_threshold],
+                                 ' meters) greater than the distance threshold was identified. `lon/lat` for these rows were not imputed. \n')))
+    }
   } else {
     d_dist_imputed <- df %>%
       dplyr::mutate(
         lapse_distance = NA,
         imputed_coord = ifelse(!is.na(lat), 0, NA)
       )
-    message("GPS lapses were not imputed based on distance.  There are no lapses enclosed with GPS coordinates.")
+    message(crayon::green("GPS lapses were not imputed based on distance. There are no lapses enclosed with GPS coordinates."))
   }
 
   if (show_lapse_distance == TRUE) {
-    d_dist_imputed
+    d_dist_imputed <- d_dist_imputed
   } else {
-    d_dist_imputed %>% dplyr::select(-lapse_distance)
+    d_dist_imputed <- d_dist_imputed %>%
+      dplyr::select(-lapse_distance)
   }
+  d_dist_imputed
 }
+
+
 
 ###
 
