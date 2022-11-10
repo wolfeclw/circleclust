@@ -2,33 +2,38 @@
 % Please edit documentation in R/impute_time.R
 \name{impute_time}
 \alias{impute_time}
-\title{Impute datetime for gaps in GPS data}
+\title{Impute datetime for gaps in time series data}
 \usage{
-impute_time(df, dt_field = NULL)
+impute_time(df, dt_field = NULL, fill_cols = NULL)
 }
 \arguments{
 \item{df}{a data frame with a datetime field.}
 
 \item{dt_field}{character; name of datetime field.}
-}
-\value{
-data frame.
+
+\item{fill_cols}{character; names of columns that should have values carried forward.}
 }
 \description{
-\code{impute_time()} imputes datetime for gaps in GPS data.  Gaps in time may result
-from filtering of invalid GPS data or because the GPS logger goes into 'sleep'
-mode (i.e. Columbus GPS logger). Datetime rows are added to the input data frame
-under the specified datetime column (\code{dt_field}) to fill gaps between time stamps.
-The sampling interval is automatically calculated.
+\code{impute_time()} fills datetime gaps in time series data. Specifically,
+this function was designed to impute gaps in GPS data that may result
+from signal loss or because the GPS logger goes into 'sleep' mode (i.e. Columbus GPS logger).
+Datetime rows are added to the input data frame under the specified datetime
+column (\code{dt_field}) to fill gaps between time stamps. The sampling interval is
+automatically calculated.
 }
 \details{
+Columns that have one unique value and are unaffected by imputation  (i.e.
+participant or sample ID) can be specified under '\code{fill_cols}. Values for these
+columns will be carried forward from the last observation.  If NULL (default),
+only the datetime column (\code{dt_field}) will be assigned values for the imputed rows.
+
 \code{impute_coords()} can be used in conjunction with \code{impute_time()} to assign
-latitude and longitude to the added time stamps/rows.
+latitude and longitude to the added timestamps/rows.
 }
 \examples{
 \dontrun{
-impute_time(df, dt_field = 'Date_Time') \%>\%
-  impute_coords()
+impute_time(df, dt_field = 'Date_Time', fill_cols = 'ID') \%>\%
+  impute_coords(dt_field = 'Date_Time')
 }
 
 }

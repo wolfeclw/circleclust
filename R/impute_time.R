@@ -1,28 +1,34 @@
 
-#' Impute datetime for gaps in GPS data
+#' Impute datetime for gaps in time series data
 #'
-#' `impute_time()` imputes datetime for gaps in GPS data.  Gaps in time may result
-#' from filtering of invalid GPS data or because the GPS logger goes into 'sleep'
-#' mode (i.e. Columbus GPS logger). Datetime rows are added to the input data frame
-#' under the specified datetime column (`dt_field`) to fill gaps between time stamps.
-#' The sampling interval is automatically calculated.
+#' `impute_time()` fills datetime gaps in time series data. Specifically,
+#' this function was designed to impute gaps in GPS data that may result
+#' from signal loss or because the GPS logger goes into 'sleep' mode (i.e. Columbus GPS logger).
+#' Datetime rows are added to the input data frame under the specified datetime
+#' column (`dt_field`) to fill gaps between time stamps. The sampling interval is
+#' automatically calculated.
+#'
+#' Columns that have one unique value and are unaffected by imputation  (i.e.
+#' participant or sample ID) can be specified under '`fill_cols`. Values for these
+#' columns will be carried forward from the last observation.  If NULL (default),
+#' only the datetime column (`dt_field`) will be assigned values for the imputed rows.
 #'
 #' `impute_coords()` can be used in conjunction with `impute_time()` to assign
-#' latitude and longitude to the added time stamps/rows.
+#' latitude and longitude to the added timestamps/rows.
 #'
 #' @param df a data frame with a datetime field.
 #' @param dt_field character; name of datetime field.
+#' @param fill_cols character; names of columns that should have values carried forward.
 #'
-#' @return data frame.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' impute_time(df, dt_field = 'Date_Time') %>%
-#'   impute_coords()
+#' impute_time(df, dt_field = 'Date_Time', fill_cols = 'ID') %>%
+#'   impute_coords(dt_field = 'Date_Time')
 #' }
 #'
-impute_time <- function(df, dt_field = NULL) {
+impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
 
   if (is.null(dt_field)) {
     stop("`dt_field` has not been assigned a value.", call. = FALSE)
@@ -37,7 +43,7 @@ impute_time <- function(df, dt_field = NULL) {
     )
   }
 
-  time_unit <- floor(quantile(diff(df[[dt_field]]), 0.75))
+  time_unit <- floor(quantile(diff(df[[dt_field]]), 0.95))
   units(time_unit) <- "secs"
   time_unit <- as.numeric(time_unit)
 
@@ -55,9 +61,9 @@ impute_time <- function(df, dt_field = NULL) {
 
   d_tlapse <- df %>%
     dplyr::mutate(r = dplyr::row_number(),
-           lag_dt = dplyr::lag(.[[dt_field]]),
-           tlag = as.numeric(.[[dt_field]] - lag_dt),
-           tbreak = ifelse(tlag > time_unit & !is.na(tlag), 1, 0)) %>%
+                  lag_dt = dplyr::lag(.[[dt_field]]),
+                  tlag = as.numeric(.[[dt_field]] - lag_dt),
+                  tbreak = ifelse(tlag > time_unit & !is.na(tlag), 1, 0)) %>%
     dplyr::filter(tbreak == 1) %>%
     dplyr::mutate(tlapse_grp = cumsum(tbreak))
 
@@ -66,18 +72,33 @@ impute_time <- function(df, dt_field = NULL) {
   add_time_rows <- function(d) {
     d_add_time <- tibble::tibble(new_dt = d$lag_dt + lubridate::dseconds(time_unit*1:(d$tlag/time_unit))) %>%
       dplyr::rename({{dt_field}} := new_dt)
+    d_add_time
   }
 
   d_time_imputed <- purrr::map_df(l_tlapse, add_time_rows)
   n_imputed <- nrow(d_time_imputed)
   dur_imputed <- round(n_imputed/(60/time_unit), digits = 1)
 
-  message(paste0('Measurements appear to have been recorded at a ', time_unit,
-                 ' second sampling interval.'))
-  message(paste0('A total of ', length(l_tlapse), ' lapses in time were identified.'))
-  message(paste0('A total of ', n_imputed, ' datetime rows (', dur_imputed, ' mins) were imputed.'))
+  message(crayon::green(paste0('Measurements appear to have been recorded at a ', time_unit,
+                               ' second sampling interval.')))
+  message(crayon::cyan(paste0('A total of ', length(l_tlapse), ' lapses in time were identified.')))
+  message(crayon::cyan(paste0('A total of ', n_imputed, ' datetime rows (', dur_imputed, ' mins) were imputed.')))
 
   d_imputed <- suppressMessages(dplyr::full_join(df, d_time_imputed))
+
+  if (!is.null(fill_cols)) {
+
+    fill_lgl <- fill_cols %in% names(df)
+
+    if (any(!fill_lgl)) {
+      stop(paste0('All values assigned to `fill_cols` must be in the input data frame. Not found: ',
+                  paste0('"', fill_cols[!fill_lgl], collapse = '", '), '"'),
+           call. = FALSE)
+    }
+    d_imputed <- d_imputed %>%
+      tidyr::fill(., {{fill_cols}})
+    message(crayon::cyan(paste0('Column(s) `', paste0(fill_cols, collapse = '`, `'), '` were carried forward from the last observation for the imputed rows.')))
+  }
 
   d_imputed %>%
     dplyr::arrange(., .[[dt_field]])
