@@ -39,16 +39,17 @@
 impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = 0.00005,
                           show_lapse_distance = FALSE, fill_open_lapses = FALSE, speed_threshold = NULL,
                           speed_window = NULL, open_lapse_length = NULL) {
+
   if (is.null(dt_field)) {
     stop("`dt_field` has not been assigned a value.", call. = FALSE)
   } else if (!lubridate::is.POSIXct(df[[dt_field]])) {
     c_dt_field <- class(df[[dt_field]])
     stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
-      call. = FALSE
+         call. = FALSE
     )
   } else if (is.unsorted(df[[dt_field]])) {
     stop(paste0("The input data frame should be sorted by ascending ", {{ dt_field }}, "."),
-      call. = FALSE
+         call. = FALSE
     )
   }
 
@@ -57,37 +58,46 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
     is.numeric
   ))
 
-  d_imputed <- if (sum(!is.na(df$lat)) == nrow(df) | sum(!is.na(df$lat)) == 0) {
-    df %>% dplyr::mutate(imputed_coord = 0)
-  } else if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
+  if (fill_open_lapses == TRUE & open_parms_lgl != 3) {
+
     stop(paste("To impute open lapses, numeric values must be assigned to `speed_threshold`, `speed_window`,",
-      "and `open_lapse_length`.",
-      sep = "\n"
+               "and `open_lapse_length`.",
+               sep = "\n"
     ),
     call. = FALSE
     )
+  }
+
+  if (sum(!is.na(df$lat)) == nrow(df)) {
+
+    d_imputed <- df %>%
+      dplyr::mutate(imputed_coord = 0)
+    message("All location data is complete - coordinates were not imputed.")
+
   } else if (fill_open_lapses == TRUE) {
-    impute_coords_open(df,
-      distance_threshold = distance_threshold, jitter_amount = jitter_amount,
-      show_lapse_distance = show_lapse_distance, speed_threshold = speed_threshold, speed_window = speed_window,
-      open_lapse_length = open_lapse_length
-    )
+
+    d_dist_imputed <- impute_coords_dist(df, dt_field = dt_field, distance_threshold = distance_threshold,
+                                         jitter_amount = jitter_amount, show_lapse_distance = show_lapse_distance)
+
+    d_imputed <- impute_coords_open(d_dist_imputed, jitter_amount = jitter_amount, speed_threshold = speed_threshold,
+                                    speed_window = speed_window, open_lapse_length = open_lapse_length)
+
   } else {
-    impute_coords_dist(df, dt_field = dt_field,
-      distance_threshold = distance_threshold, jitter_amount = jitter_amount,
-      show_lapse_distance = show_lapse_distance
-    )
+
+    d_imputed <- impute_coords_dist(df, dt_field = dt_field, distance_threshold = distance_threshold,
+                                    jitter_amount = jitter_amount, show_lapse_distance = show_lapse_distance)
+
   }
 
   if (sum(!is.na(df$lat)) != nrow(df)) {
     n_imputed <- sum(d_imputed$imputed_coord, na.rm = TRUE)
     n_na_coords <- sum(is.na(d_imputed$lat))
 
-    message(crayon::cyan(paste0(
-      "A total of ", n_imputed, " (", scales::percent(n_imputed / nrow(d_imputed)), ")",
+    message(crayon::magenta(paste0(
+      "\nA total of ", n_imputed, " (", scales::percent(n_imputed / nrow(d_imputed)), ")",
       " of the coordinates were imputed."
     )))
-    message(crayon::cyan(paste0(
+    message(crayon::magenta(paste0(
       "A total of ", n_na_coords, " (", scales::percent(n_na_coords / nrow(d_imputed)), ")",
       " of the coordinates are missing GPS data after imputation."
     )))
@@ -95,20 +105,17 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
 
   if (fill_open_lapses == FALSE & open_parms_lgl > 0) {
     warning(paste("Values assigned to `speed_threshold`, `speed_window`, and/or `open_lapse_lenth` were ignored.",
-      "Set `fill_open_lapses` == `TRUE`.",
-      sep = "\n"
+                  "Set `fill_open_lapses` == `TRUE`.",
+                  sep = "\n"
     ),
     call. = FALSE
     )
   }
 
-  if (sum(!is.na(df$lat)) == nrow(df)) {
-    message("All location data is complete - coordinates were not imputed.")
-  }
-
   if (sum(!is.na(df$lat)) == 0) {
-    message("All lat/lon values are invalid.")
+    stop("All `lat/lon` values are invalid.", call. = FALSE)
   }
 
   d_imputed
 }
+
