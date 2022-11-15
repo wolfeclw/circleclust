@@ -1,11 +1,11 @@
 Package: circleclust
 Title: Spatiotemporal Clustering for Personal Location Data
-Version: 3.0
+Version: 3.1
 Authors@R: 
     person(given = "Chris",
            family = "Wolfe",
            role = c("aut", "cre"),
-           email = "chris.wolfe@cchmc.org",
+           email = "wolfe.christopherlee@gmail.com",
            comment = c(ORCID = "https://orcid.org/0000-0002-5882-1149"))
 Description: `circleclust` is a collection of functions that facilitate the analysis 
     of personal location data to decipher patterns in mobility using 
@@ -16,7 +16,8 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
-    testthat
+    testthat,
+    stats
 Config/testthat/edition: 3
 Imports: 
     sf,

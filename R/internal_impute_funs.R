@@ -1,6 +1,7 @@
 ##### INTERNAL IMPUTE FUNCTIONS
 
 
+
 impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, jitter_amount = 0.00005,
                                show_lapse_distance = FALSE) {
   d_r <- df %>%
@@ -58,10 +59,10 @@ impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, ji
 
     d_coords_fill <- d_dist %>%
       dplyr::mutate(
-        impute_lat = ifelse(is.na(lat) & lapse_distance < distance_threshold,
+        impute_lat = ifelse(is.na(lat),
                             zoo::na.locf(lat, na.rm = FALSE), lat
         ),
-        impute_lon = ifelse(is.na(lon) & lapse_distance < distance_threshold,
+        impute_lon = ifelse(is.na(lon),
                             zoo::na.locf(lon, na.rm = FALSE), lon
         )
       ) %>%

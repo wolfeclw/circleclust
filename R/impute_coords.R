@@ -26,6 +26,9 @@
 #'
 #' @return a data frame.  An additional column is created to indicate whether
 #' coordinates were imputed ('imputed_coord').
+#'
+#' @importFrom stats na.omit
+#'
 #' @export
 #'
 #' @examples

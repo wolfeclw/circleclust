@@ -22,6 +22,8 @@
 #'
 #' @export
 #'
+#' @importFrom stats quantile
+#'
 #' @examples
 #' \dontrun{
 #' impute_time(df, dt_field = 'Date_Time', fill_cols = 'ID') %>%
