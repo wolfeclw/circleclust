@@ -176,16 +176,16 @@ circleclust <- function(df, dt_field = NULL, circvar_threshold = .7, window = 60
     d_clusters <- d_break %>%
       dplyr::select(-c(move_break, r)) %>%
       dplyr::mutate(sp_temporal_cluster = NA)
-    message(paste0(
+    message(cli::col_magenta(paste0(
       "NO CLUSTERS IDENTIFIED - the individual may have been in transit",
       "\n for the duration of the sampling session."
-    ))
+    )))
   } else if (sum(is.na(df$lat)) == nrow(df)) {
     d_clusters <- df
-    message(paste0(
+    message(cli::col_red(paste0(
       "INVALID INPUT DATA - the input data frame does not have valid 'lon/lat' coordinates.",
       "\n Data unable to be clustered."
-    ))
+    )))
   }
 
   if (show_circvar == TRUE & sum(is.na(df$lat)) != nrow(df)) {

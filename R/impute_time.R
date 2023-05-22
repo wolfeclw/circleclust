@@ -130,7 +130,7 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, fo
     }
     d_imputed <- d_imputed %>%
       tidyr::fill(., {{fill_cols}})
-    message(crayon::cyan(paste0('Column(s) `', paste0(fill_cols, collapse = '`, `'), '` were carried forward from the last observation for the imputed rows.')))
+    message(cli::col_cyan(paste0('Column(s) `', paste0(fill_cols, collapse = '`, `'), '` were carried forward from the last observation for the imputed rows.')))
   }
 
   d_imputed %>%

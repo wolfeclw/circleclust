@@ -96,11 +96,11 @@ impute_coords <- function(df, dt_field = NULL, distance_threshold = 100, jitter_
     n_imputed <- sum(d_imputed$imputed_coord, na.rm = TRUE)
     n_na_coords <- sum(is.na(d_imputed$lat))
 
-    message(crayon::magenta(paste0(
+    message(cli::col_magenta(paste0(
       "\nA total of ", n_imputed, " (", scales::percent(n_imputed / nrow(d_imputed)), ")",
       " of the coordinates were imputed."
     )))
-    message(crayon::magenta(paste0(
+    message(cli::col_magenta(paste0(
       "A total of ", n_na_coords, " (", scales::percent(n_na_coords / nrow(d_imputed)), ")",
       " of the coordinates are missing GPS data after imputation."
     )))

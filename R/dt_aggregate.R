@@ -83,10 +83,10 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds", floor_or_celil
 
     cp <- ifelse(length(rm_cols) > 1, 'Columns ', 'Column ')
     is_are <- ifelse(length(rm_cols) > 1, ' are', ' is')
-    message(
+    cli::col_magenta(message(
       paste0(cp, paste0('`', rm_cols, '`', collapse = ", "), is_are,
       " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
-    )
+    ))
   }
 
   d_agg

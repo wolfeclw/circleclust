@@ -87,15 +87,15 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
 
   if (n_spatio > n_db) {
 
-    message(crayon::green(paste0('The number of spatiotemporal clusters was reduced from ', n_spatio, ' to ', n_db, ' spatial clusters.')))
+    message(cli::col_green(paste0('The number of spatiotemporal clusters was reduced from ', n_spatio, ' to ', n_db, ' spatial clusters.')))
 
     if (noise_lgl) {
 
       n_noise <- db_table[['0']]
-      message(crayon::cyan(paste(n_noise,
+      message(cli::col_cyan(paste(n_noise,
                                  'coordinates were classified as "noise."')))
     } else {
-      message(crayon::cyan('Noise points were not detected.'))
+      message(cli::col_cyan('Noise points were not detected.'))
     }
 
     if (keep_noise == TRUE & noise_lgl) {
@@ -103,7 +103,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
       pct_noise <- round(n_noise/nrow(df)*100, digits = 3)
 
       if (pct_noise < noise_threshold) {
-        message(crayon::red(
+        message(cli::col_red(
           paste0('The percentage of noise coordinates (', pct_noise, '%) was below the threshold value (',
                  noise_threshold, '%), and these observations were deleted.')))
 
@@ -128,7 +128,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
         d_mc <- d_mc %>%
           dplyr::filter(!spatial_cluster == 0 | is.na(spatial_cluster))
 
-        message(crayon::cyan(paste0('Noise coordinates were retained and assigned to spatial cluster(s): ',
+        message(cli::col_cyan(paste0('Noise coordinates were retained and assigned to spatial cluster(s): ',
                                     paste(unique(mc_noise$spatial_cluster), collapse = ' '), '.')))
       }
     }
@@ -147,7 +147,7 @@ merge_clusters <- function(df, dt_field = NULL, radius = 100, minPts = 5,
     stop_quietly()
 
   } else {
-    message(crayon::cyan('Clusters were not merged. Multiple clusters do not exist within the specified radius.'))
+    message(cli::col_cyan('Clusters were not merged. Multiple clusters do not exist within the specified radius.'))
 
     d_mc <- d_mc %>%
       dplyr::select(-spatial_cluster)

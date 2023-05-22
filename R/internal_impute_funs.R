@@ -99,8 +99,8 @@ impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, ji
     min_dist <- min(distances)
     max_dist <- max(distances)
 
-    message(crayon::cyan(paste0('\nA total of ', length(distances), ' `lat/lon` lapses were identified.')))
-    message(crayon::cyan(paste0(
+    message(cli::col_cyan(paste0('\nA total of ', length(distances), ' `lat/lon` lapses were identified.')))
+    message(cli::col_cyan(paste0(
       "The minimum and maximum distances between lapses are ", min_dist, " and ",
       max_dist, " meters, respectively."
     )))
@@ -109,12 +109,12 @@ impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, ji
     n_gt_threshold <- length(wch_gt_threshold)
 
     if (n_gt_threshold > 0 & n_gt_threshold == length(distances)) {
-      message(crayon::red(paste0(
+      message(cli::col_red(paste0(
         "The minimum distance between for all missing coordinates (", min_dist,
         ") meters is greater than the distance threshold (", distance_threshold, ") meters. \n `lon/lat` for rows with missing GPS information were not imputed."
       )))
     } else if (n_gt_threshold > 0) {
-      message(crayon::red(paste0('  - A lapse greater than the distance threshold (', distances[wch_gt_threshold],
+      message(cli::col_red(paste0('  - A lapse greater than the distance threshold (', distances[wch_gt_threshold],
                                  ' meters) was identified. `lon/lat` for these rows were not imputed. \n')))
     }
   } else {
@@ -123,7 +123,7 @@ impute_coords_dist <- function(df, dt_field = NULL, distance_threshold = 100, ji
         lapse_distance = NA,
         imputed_coord = ifelse(!is.na(lat), 0, NA)
       )
-    message(crayon::green("GPS lapses were not imputed based on distance. There are no lapses enclosed with GPS coordinates."))
+    message(cli::col_green("GPS lapses were not imputed based on distance. There are no lapses enclosed with GPS coordinates."))
   }
 
   if (show_lapse_distance == TRUE) {
@@ -194,20 +194,20 @@ impute_coords_open <- function(df, jitter_amount = 0.00005, speed_threshold = 5,
 
       dh_fill <- suppressMessages(dplyr::full_join(d_r, h_jitter))
 
-      message(crayon::green(paste0('An open lapse at the head of the data frame was detected. ',
+      message(cli::col_green(paste0('An open lapse at the head of the data frame was detected. ',
                                   paste0(nrow(open_lapse_head), ' missiing coordinates were imputed.'))))
     } else {
       dh_fill <- d_r
-      message(crayon::red(paste0(
+      message(cli::col_red(paste0(
         "The speed threshold is less than calcualted speed at the head of the data frame (", h_speed,
         " m/s) -- the open lapse was not imputed.")))
     }
   } else if (nrow(open_lapse_head) == 0) {
     dh_fill <- d_r
-    message(crayon::cyan('\nAn open lapse at the head of the data frame was not detected.'))
+    message(cli::col_cyan('\nAn open lapse at the head of the data frame was not detected.'))
   } else {
     dh_fill <- d_r
-    message(crayon::red("\nThe lapse at the head of the data frame exceeded the length threshold. Coordinates were not imputed."))
+    message(cli::col_red("\nThe lapse at the head of the data frame exceeded the length threshold. Coordinates were not imputed."))
   }
 
 
@@ -240,22 +240,22 @@ impute_coords_open <- function(df, jitter_amount = 0.00005, speed_threshold = 5,
       t_jitter <- t_jitter[-1, ]
       dt_fill <- suppressMessages(dplyr::full_join(dh_fill, t_jitter))
 
-      message(crayon::green(paste0('An open lapse at the end of the data frame was detected. ',
+      message(cli::col_green(paste0('An open lapse at the end of the data frame was detected. ',
                                   paste0(nrow(open_lapse_tail), ' missiing coordinates were imputed.'))))
 
     } else {
 
       dt_fill <- dh_fill
-      message(crayon::red(paste0(
+      message(cli::col_red(paste0(
         "The speed threshold is less than calcualted speed at the end of the data frame (", t_speed,
         " m/s) -- the open lapse was not imputed.")))
     }
   } else if (nrow(open_lapse_tail) == 0) {
     dt_fill <- dh_fill
-    message(crayon::cyan('An open lapse at the end of the data frame was not detected.'))
+    message(cli::col_cyan('An open lapse at the end of the data frame was not detected.'))
   } else {
     dt_fill <- dh_fill
-    message(crayon::red("The lapse at the end of the data frame exceeded the length threshold. Coordinates were not imputed."))
+    message(cli::col_red("The lapse at the end of the data frame exceeded the length threshold. Coordinates were not imputed."))
   }
 
   if ('jlat' %in% names(dt_fill)) {

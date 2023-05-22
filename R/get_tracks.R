@@ -57,7 +57,7 @@ get_tracks <- function(df, nested = TRUE, geometry = TRUE, summary = TRUE, dt_fi
                                         track_grp, start_lat, start_lon, end_lat, end_lon))
 
   np <- nrow(dt)
-  message(paste0('A total of ', np, ' tracks were detected.'))
+  message(cli::col_green(paste0('A total of ', np, ' tracks were detected.')))
 
   if (nested == FALSE) {
     dt <- dt %>%
@@ -118,8 +118,8 @@ get_tracks <- function(df, nested = TRUE, geometry = TRUE, summary = TRUE, dt_fi
 
     dt <- dplyr::bind_cols(dt, durs, start_time, end_time, d_az)
 
-    message(paste0('Measurements appear to have been recorded at a ', time_unit,
-                   ' second sampling interval.'))
+    message(cli::col_cyan(paste0('Measurements appear to have been recorded at a ', time_unit,
+                   ' second sampling interval.')))
   }
 
   if (geometry == TRUE) {

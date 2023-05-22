@@ -9,7 +9,7 @@ impute_time(
   dt_field = NULL,
   fill_cols = NULL,
   force = FALSE,
-  force_unit = 1
+  force_interval = 1
 )
 }
 \arguments{
@@ -21,6 +21,10 @@ impute_time(
 
 \item{force}{logical; force the function to fill time between sampling intervals
 even if no lapses are detected.}
+
+\item{force_interval}{numeric; the new sampling frequency in seconds to be
+forced upon the input data frame. \code{force_interval} must be less than the
+sampling interval of the input data frame.}
 }
 \description{
 \code{impute_time()} fills datetime gaps in time series data. Specifically,

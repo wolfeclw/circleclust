@@ -82,14 +82,14 @@ filter_time <- function(df, t_var = NULL, t1 = NULL, t2 = NULL, span_days = FALS
     dplyr::filter(deg_time > deg_t1 & deg_time < deg_t2)
 
   if (nrow(d_filtered) == 0 & sum(ht1 > ht2) > 0 & span_days == FALSE) {
-    message(crayon::red('`filter_time` returned zero columns.'))
-    message(crayon::cyan('Does your time interval include midnight? Set `span_days = TRUE`. \n'))
+    message(cli::col_red('`filter_time` returned zero columns.'))
+    message(cli::col_cyan('Does your time interval include midnight? Set `span_days = TRUE`. \n'))
   }
 
   # if (span_days == TRUE & (min(lubridate::hour(d_filtered[[t_var]])) < lubridate::hour(ht1))) {
   if (span_days == TRUE & (lubridate::hour(ht1) < lubridate::hour(ht2))) {
     warning('Check the output data frame.  Times outside the requested time interval were returned.')
-    message(crayon::red('\n If the requested time interval does not include midnight,`span_days should be set to `FALSE`. \n'))
+    message(cli::col_red('\n If the requested time interval does not include midnight,`span_days should be set to `FALSE`. \n'))
   }
 
   d_filtered <- d_filtered[, !names(d_filtered) %in% 'deg_time']

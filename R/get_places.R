@@ -107,7 +107,7 @@ get_places <- function(df, cluster_col = 'sp_temporal_cluster', nested = TRUE, g
     # dc$end_time <- NA
 
     warning(paste('  Looks like the input data frame includes merged clusters.',
-                  crayon::bold('Summary start and end times may not represent a continuous interval of time.'),
+                  cli::style_bold('Summary start and end times may not represent a continuous interval of time.'),
                   '\n Start and end times represent the first and last timestamp recorded at each location.'),
             call. = FALSE)
   }

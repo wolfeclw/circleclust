@@ -37,7 +37,7 @@ Imports:
     zoo,
     highcharter,
     viridis,
-    crayon,
+    cli,
     dbscan,
     hms
 Depends: 
