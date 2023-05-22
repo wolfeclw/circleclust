@@ -21,6 +21,9 @@
 #' @param fill_cols character; names of columns that should have values carried forward.
 #' @param force logical; force the function to fill time between sampling intervals
 #' even if no lapses are detected.
+#' @param force_interval numeric; the new sampling frequency in seconds to be
+#' forced upon the input data frame. `force_interval` must be less than the
+#' sampling interval of the input data frame.
 #'
 #' @export
 #'
@@ -32,7 +35,7 @@
 #'   impute_coords(dt_field = 'Date_Time')
 #' }
 #'
-impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, force_unit = 1) {
+impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, force_interval = 1) {
 
   if (is.null(dt_field)) {
     stop("`dt_field` has not been assigned a value.", call. = FALSE)
@@ -76,24 +79,24 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, fo
 
   if (nrow(d_tlapse) == 0 & isFALSE(force)) {
     message(cli::col_cyan('No time lapses were detected--returning the input data frame.'))
-    message(cli::col_magenta('If you wish to add time between timestamp intervals, you must specify `force = TRUE` and assign a value to `force_unit`.'))
+    message(cli::col_magenta('If you wish to add time between timestamp intervals, you must specify `force = TRUE` and assign a value to `force_interval`.'))
     d_imputed <- df
   } else if (nrow(d_tlapse) == 0 & isTRUE(force)) {
 
-    if (force_unit >= time_unit) {
-      stop(paste0('`force_unit` must be less than the sampling interval: ', time_unit, ' second(s).'))
+    if (force_interval >= time_unit) {
+      stop(paste0('`force_interval` must be less than the sampling interval: ', time_unit, ' second(s).'))
     }
 
     dt_range <- range(df[[dt_field]])
     force_diff <- as.numeric(difftime(dt_range[2], dt_range[1], units = 'secs'))
-    force_len <- seq(to = force_diff, by = force_unit)
+    force_len <- seq(to = force_diff, by = force_interval)
     dt_force <- dt_range[1] + lubridate::seconds(force_len)
     d_add_time <- tibble::enframe(dt_force, name = NULL, value = dt_field)
 
     d_imputed <- suppressMessages(dplyr::full_join(df, d_add_time))
 
     message(cli::col_cyan(paste0(force_len[length(force_len)] - length(df), ' datetime rows have been added.')))
-    message(cli::col_cyan(paste0('The output sampling frequency is: ', force_unit, ' second(s).')))
+    message(cli::col_cyan(paste0('The output sampling frequency is: ', force_interval, ' second(s).')))
 
   } else {
 
