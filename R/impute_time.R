@@ -19,6 +19,8 @@
 #' @param df a data frame with a datetime field.
 #' @param dt_field character; name of datetime field.
 #' @param fill_cols character; names of columns that should have values carried forward.
+#' @param force logical; force the function to fill time between sampling intervals
+#' even if no lapses are detected.
 #'
 #' @export
 #'
@@ -30,7 +32,7 @@
 #'   impute_coords(dt_field = 'Date_Time')
 #' }
 #'
-impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
+impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, force_unit = 1) {
 
   if (is.null(dt_field)) {
     stop("`dt_field` has not been assigned a value.", call. = FALSE)
@@ -39,15 +41,18 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
     stop(paste0("`dt_field` must be a datetime. `", {{ dt_field }}, "` is of class ", c_dt_field, "."),
          call. = FALSE
     )
-  } else if (is.unsorted(df[[dt_field]])) {
-    stop(paste0("The input data frame should be sorted by ascending ", {{ dt_field }}, "."),
-         call. = FALSE
-    )
+  } else if (is.unsorted(df[[dt_field]], strictly = FALSE)) {
+    message(cli::col_red(paste0("The input data frame should be sorted by ascending ", {{ dt_field }}, ".")))
+    message(cli::col_magenta('Sorting the data frame now...'))
+    Sys.sleep(0.2)
   }
 
   time_unit <- floor(quantile(diff(df[[dt_field]]), 0.95))
   units(time_unit) <- "secs"
   time_unit <- as.numeric(time_unit)
+
+  message(cli::col_green(paste0('Measurements appear to have been recorded at a ', time_unit,
+                                ' second sampling interval.')))
 
   if (is.na(time_unit)) {
     stop('A datetime column muste be assigned to `dt_field`.',
@@ -60,7 +65,6 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
          call. = FALSE)
   }
 
-
   d_tlapse <- df %>%
     dplyr::mutate(r = dplyr::row_number(),
                   lag_dt = dplyr::lag(.[[dt_field]]),
@@ -69,24 +73,48 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
     dplyr::filter(tbreak == 1) %>%
     dplyr::mutate(tlapse_grp = cumsum(tbreak))
 
-  l_tlapse <- dplyr::group_split(d_tlapse, tlapse_grp)
 
-  add_time_rows <- function(d) {
-    d_add_time <- tibble::tibble(new_dt = d$lag_dt + lubridate::dseconds(time_unit*1:(d$tlag/time_unit))) %>%
-      dplyr::rename({{dt_field}} := new_dt)
-    d_add_time
+  if (nrow(d_tlapse) == 0 & isFALSE(force)) {
+    message(cli::col_cyan('No time lapses were detected--returning the input data frame.'))
+    message(cli::col_magenta('If you wish to add time between timestamp intervals, you must specify `force = TRUE` and assign a value to `force_unit`.'))
+    d_imputed <- df
+  } else if (nrow(d_tlapse) == 0 & isTRUE(force)) {
+
+    if (force_unit >= time_unit) {
+      stop(paste0('`force_unit` must be less than the sampling interval: ', time_unit, ' second(s).'))
+    }
+
+    dt_range <- range(df[[dt_field]])
+    force_diff <- as.numeric(difftime(dt_range[2], dt_range[1], units = 'secs'))
+    force_len <- seq(to = force_diff, by = force_unit)
+    dt_force <- dt_range[1] + lubridate::seconds(force_len)
+    d_add_time <- tibble::enframe(dt_force, name = NULL, value = dt_field)
+
+    d_imputed <- suppressMessages(dplyr::full_join(df, d_add_time))
+
+    message(cli::col_cyan(paste0(force_len[length(force_len)] - length(df), ' datetime rows have been added.')))
+    message(cli::col_cyan(paste0('The output sampling frequency is: ', force_unit, ' second(s).')))
+
+  } else {
+
+    l_tlapse <- dplyr::group_split(d_tlapse, tlapse_grp)
+
+    add_time_rows <- function(d) {
+      d_add_time <- tibble::tibble(new_dt = d$lag_dt + lubridate::dseconds(time_unit*1:(d$tlag/time_unit))) %>%
+        dplyr::rename({{dt_field}} := new_dt)
+      d_add_time
+    }
+
+    d_time_imputed <- purrr::map_df(l_tlapse, add_time_rows)
+    n_imputed <- nrow(d_time_imputed)
+    dur_imputed <- round(n_imputed/(60/time_unit), digits = 1)
+
+    message(cli::col_cyan(paste0('A total of ', length(l_tlapse), ' datetime lapses in time were identified.')))
+    message(cli::col_cyan(paste0('A total of ', n_imputed, ' datetime rows (', dur_imputed, ' mins) were imputed.')))
+
+    d_imputed <- suppressMessages(dplyr::full_join(df, d_time_imputed))
   }
 
-  d_time_imputed <- purrr::map_df(l_tlapse, add_time_rows)
-  n_imputed <- nrow(d_time_imputed)
-  dur_imputed <- round(n_imputed/(60/time_unit), digits = 1)
-
-  message(crayon::green(paste0('Measurements appear to have been recorded at a ', time_unit,
-                               ' second sampling interval.')))
-  message(crayon::cyan(paste0('A total of ', length(l_tlapse), ' datetime lapses in time were identified.')))
-  message(crayon::cyan(paste0('A total of ', n_imputed, ' datetime rows (', dur_imputed, ' mins) were imputed.')))
-
-  d_imputed <- suppressMessages(dplyr::full_join(df, d_time_imputed))
 
   if (!is.null(fill_cols)) {
 
@@ -104,7 +132,6 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL) {
 
   d_imputed %>%
     dplyr::arrange(., .[[dt_field]])
-
 }
 
 

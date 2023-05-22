@@ -4,7 +4,13 @@
 \alias{impute_time}
 \title{Impute datetime for gaps in time series data}
 \usage{
-impute_time(df, dt_field = NULL, fill_cols = NULL)
+impute_time(
+  df,
+  dt_field = NULL,
+  fill_cols = NULL,
+  force = FALSE,
+  force_unit = 1
+)
 }
 \arguments{
 \item{df}{a data frame with a datetime field.}
@@ -12,6 +18,9 @@ impute_time(df, dt_field = NULL, fill_cols = NULL)
 \item{dt_field}{character; name of datetime field.}
 
 \item{fill_cols}{character; names of columns that should have values carried forward.}
+
+\item{force}{logical; force the function to fill time between sampling intervals
+even if no lapses are detected.}
 }
 \description{
 \code{impute_time()} fills datetime gaps in time series data. Specifically,
