@@ -36,7 +36,7 @@ read_columbus <- function(path, gps_format = 'nmea', filter_fix = NULL, tzone_gp
   if (gps_format == 'nmea') {
     d_columbus <- columbus_nmea(path = path, filter_fix = filter_fix, tzone_gps = tzone_gps, tzone_out = tzone_out)
   } else if (gps_format == 'csv') {
-    d_columbus <- columbus_nmea(path = path, tzone_gps = tzone_gps, tzone_out = tzone_out)
+    d_columbus <- columbus_csv(path = path, tzone_gps = tzone_gps, tzone_out = tzone_out)
   }
 
   if (!is.null(sample_col) & !is.character(sample_col)) {
