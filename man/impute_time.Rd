@@ -20,7 +20,9 @@ impute_time(
 \item{fill_cols}{character; names of columns that should have values carried forward.}
 
 \item{force}{logical; force the function to fill time between sampling intervals
-even if no lapses are detected.}
+even if no lapses are detected. For example, if location is recorded at a 5 second
+sampling interval, extra rows can be inserted to convert the sampling resolution
+to 1 measurement per second (\verb{force = TRUE, force_interval = 1}). Default = FALSE.}
 
 \item{force_interval}{numeric; the new sampling frequency in seconds to be
 forced upon the input data frame. \code{force_interval} must be less than the

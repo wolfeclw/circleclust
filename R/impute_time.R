@@ -20,7 +20,9 @@
 #' @param dt_field character; name of datetime field.
 #' @param fill_cols character; names of columns that should have values carried forward.
 #' @param force logical; force the function to fill time between sampling intervals
-#' even if no lapses are detected.
+#' even if no lapses are detected. For example, if location is recorded at a 5 second
+#' sampling interval, extra rows can be inserted to convert the sampling resolution
+#' to 1 measurement per second (`force = TRUE, force_interval = 1`). Default = FALSE.
 #' @param force_interval numeric; the new sampling frequency in seconds to be
 #' forced upon the input data frame. `force_interval` must be less than the
 #' sampling interval of the input data frame.
@@ -118,6 +120,8 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, fo
     d_imputed <- suppressMessages(dplyr::full_join(df, d_time_imputed))
   }
 
+  d_imputed <- d_imputed %>%
+    dplyr::arrange(., .[[dt_field]])
 
   if (!is.null(fill_cols)) {
 
@@ -133,8 +137,7 @@ impute_time <- function(df, dt_field = NULL, fill_cols = NULL, force = FALSE, fo
     message(cli::col_cyan(paste0('Column(s) `', paste0(fill_cols, collapse = '`, `'), '` were carried forward from the last observation for the imputed rows.')))
   }
 
-  d_imputed %>%
-    dplyr::arrange(., .[[dt_field]])
+  d_imputed
 }
 
 

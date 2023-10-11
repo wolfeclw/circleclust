@@ -8,9 +8,8 @@ dt_aggregate(
   df,
   dt_field = NULL,
   unit = "5 seconds",
-  floor_or_celiling = "floor",
   summary_fun = "median",
-  na_rm_agg = TRUE
+  na_rm = TRUE
 )
 }
 \arguments{
@@ -20,16 +19,10 @@ dt_aggregate(
 
 \item{unit}{character; string specifying a time unit or a multiple of a unit to be rounded}
 
-\item{floor_or_celiling}{character; either 'floor'(\code{\link[lubridate]{floor_date}})
-or 'ceiling'(\code{\link[lubridate]{ceiling_date}}). Default = 'floor.'}
-
 \item{summary_fun}{character; summary function (i.e. 'mean', 'median'). Default = 'median.'}
 
-\item{na_rm_agg}{logical; should NA values be removed before the chosen
+\item{na_rm}{logical; should NA values be removed before the chosen
 \code{summary_fun} computes?}
-}
-\value{
-a data frame aggregated by the specified time unit.
 }
 \description{
 \code{dt_aggregate()} aggregates numeric values to a specified time unit. Columns with
@@ -40,8 +33,8 @@ uniform character values are retained (i.e. patient ID, sensor name).
 
 dt_aggregate(df,
   dt_field = "Date_Time",
-  unit = "5 seconds", floor_or_ceiling = "floor",
-  summary_fun = "median", na_rm_agg = TRUE
+  unit = "5 seconds",
+  summary_fun = "median", na_rm = TRUE
 )
 }
 }
