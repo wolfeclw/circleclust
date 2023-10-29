@@ -47,18 +47,40 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
     dplyr::ungroup() %>%
     dplyr::rename('{dt_field}' := agg_dt)
 
-  sfun_list <- list(mean = mean,
-                    sd = sd,
-                    median = median,
-                    min = min,
-                    max = max)
+  if (isTRUE(na_rm)) {
+
+    mean_nag <- function(x) {mean(x, na.rm = TRUE)}
+    sd_nag <- function(x) {sd(x, na.rm = TRUE)}
+    median_nag <- function(x) {median(x, na.rm = TRUE)}
+    min_nag <- function(x) {
+
+      min_v <- suppressWarnings(min(x, na.rm = TRUE))
+      min_v[is.infinite(min_v)] <- NA
+      min_v
+    }
+    max_nag <- function(x) {
+
+      max_v <- suppressWarnings(max(x, na.rm = TRUE))
+      max_v[is.infinite(max_v)] <- NA
+      max_v
+    }
+
+    sfun_list <- list(mean = mean_nag,
+                      sd = sd_nag,
+                      median = median_nag,
+                      min = suppressWarnings(min_nag),
+                      max = max_nag)
+  } else {
+
+    sfun_list <- list(mean = mean,
+                      sd = sd,
+                      median = median,
+                      min = suppressWarnings(min),
+                      max = max)
+  }
 
   sfun_wch <- names(sfun_list) %in% summary_fun
   slist <- sfun_list[sfun_wch]
-
-  if (isTRUE(na_rm)) {
-    d_agg_grp <- tidyr::drop_na(d_agg_grp, dplyr::where(is.numeric))
-  }
 
   d_agg <- d_agg_grp %>%
     dplyr::summarise(dplyr::across(dplyr::where(is.numeric), slist, .names = '{.col}'), .groups = 'drop') %>%
@@ -69,6 +91,9 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
   if ('imputed_coord' %in% names(d_agg)) {
     d_agg$imputed_coord <- ceiling(d_agg$imputed_coord)
   }
+
+  d_agg <- d_agg %>%
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~ifelse(is.nan(.), NA, .)))
 
   ####
 
