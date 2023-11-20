@@ -98,7 +98,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
   ####
 
   no_num_cols <- dplyr::select(df, -dplyr::where((is.numeric))) %>%
-    dplyr::select(-dplyr::all_of({dt_field})) %>%
+    dplyr::select(-dplyr::all_of({{dt_field}})) %>%
     purrr::map(., unique)
 
   no_num_cols_len <- no_num_cols %>%
@@ -110,18 +110,22 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
     unq_lgl <- no_num_cols_len %>%
       purrr::map_lgl(., ~ . == 1)
 
-    char_keep <- no_num_cols[unq_lgl] %>%
-      dplyr::bind_cols()
+    if (any(isTRUE(unq_lgl))) {
+
+      char_keep <- no_num_cols[unq_lgl] %>%
+        dplyr::bind_cols()
+      d_agg <- dplyr::bind_cols(char_keep, d_agg)
+    }
+
     rm_cols <- no_num_cols[!unq_lgl] %>% names()
 
-    d_agg <- dplyr::bind_cols(char_keep, d_agg)
-    d_agg <- dplyr::relocate(d_agg, .data[[dt_field]])
+    d_agg <- dplyr::relocate(d_agg, {{dt_field}})
 
     if (length(rm_cols) > 0) {
 
       cp <- ifelse(length(rm_cols) > 1, 'Columns ', 'Column ')
       is_are <- ifelse(length(rm_cols) > 1, ' are', ' is')
-      cli::col_magenta(message(
+      message( cli::col_magenta(
         paste0(cp, paste0('`', rm_cols, '`', collapse = ", "), is_are,
                " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
       ))
