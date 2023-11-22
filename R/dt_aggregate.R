@@ -113,6 +113,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
     if (any(unq_lgl)) {
 
       char_keep <- no_num_cols[unq_lgl] %>%
+        purrr::map2(., names(.), ~tibble::enframe(.x, name = NULL, value = .y)) %>%
         dplyr::bind_cols()
       d_agg <- dplyr::bind_cols(char_keep, d_agg)
     }
@@ -130,17 +131,19 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
                " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
       ))
 
-      exp_cols_og <- names(df)[-which(names(df) %in% rm_cols)]
-      exp_cols_new <- d_agg[which(!names(df) %in% names(d_agg))]
-      exp_cols <- c(exp_cols_og, exp_cols_new)
+      exp_cols_rm <- names(df)[-which(names(df) %in% rm_cols)]
+      exp_cols_new <- names(d_agg)[which(!exp_cols_rm %in% names(d_agg))]
+      exp_cols <- c(exp_cols_rm, exp_cols_new)
 
       d_agg <- d_agg[ , exp_cols]
-    }
+    } else {
 
-    exp_cols_og <- names(df)
-    exp_cols_new <- d_agg[which(!names(df) %in% names(d_agg))]
-    exp_cols <- c(exp_cols_og, exp_cols_new)
-    d_agg <- d_agg[ , exp_cols]
+      exp_cols_og <- names(df)
+      exp_cols_new <- names(d_agg)[which(!names(df) %in% names(d_agg))]
+      exp_cols <- c(exp_cols_og, exp_cols_new)
+      # exp_cols <- names(df)
+      d_agg <- d_agg[ , exp_cols]
+    }
   }
 
   d_agg
