@@ -110,7 +110,7 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
     unq_lgl <- no_num_cols_len %>%
       purrr::map_lgl(., ~ . == 1)
 
-    if (any(isTRUE(unq_lgl))) {
+    if (any(unq_lgl)) {
 
       char_keep <- no_num_cols[unq_lgl] %>%
         dplyr::bind_cols()
@@ -129,9 +129,14 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
         paste0(cp, paste0('`', rm_cols, '`', collapse = ", "), is_are,
                " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
       ))
+
+      exp_cols <- names(df)[-which(names(df) %in% rm_cols)]
+      d_agg <- d_agg[ , exp_cols]
     }
+
+    exp_cols <- names(df)
+    d_agg <- d_agg[ , exp_cols]
   }
 
   d_agg
-
 }
