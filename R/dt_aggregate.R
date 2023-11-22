@@ -130,11 +130,16 @@ dt_aggregate <- function(df, dt_field = NULL, unit = "5 seconds",
                " non-numeric and contain more than one unique value. These columns were \n removed during aggregation.")
       ))
 
-      exp_cols <- names(df)[-which(names(df) %in% rm_cols)]
+      exp_cols_og <- names(df)[-which(names(df) %in% rm_cols)]
+      exp_cols_new <- d_agg[which(!names(df) %in% names(d_agg))]
+      exp_cols <- c(exp_cols_og, exp_cols_new)
+
       d_agg <- d_agg[ , exp_cols]
     }
 
-    exp_cols <- names(df)
+    exp_cols_og <- names(df)
+    exp_cols_new <- d_agg[which(!names(df) %in% names(d_agg))]
+    exp_cols <- c(exp_cols_og, exp_cols_new)
     d_agg <- d_agg[ , exp_cols]
   }
 
