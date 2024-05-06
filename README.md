@@ -45,3 +45,10 @@ To install `circleclust`, use the following code:
 ``` r
 devtools::install_github("wolfeclw/circleclust")
 ```
+
+## Citation
+
+If you use this software in a scientific manuscript, please cite our publication:
+
+  - *Turner A, Wolfe C, Ryan PH. Personal exposure to ultrafine particles in multiple microenvironments among adolescents. J Expo Sci Environ Epidemiol. 2024 Feb 28. doi: 10.1038/s41370-023-00638-7. PMID: 38418826.*
+
