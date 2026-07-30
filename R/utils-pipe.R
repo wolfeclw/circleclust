@@ -1,11 +1,4 @@
-#' Pipe operator
+#' Use native pipe
 #'
-#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
+#' This package uses R's native pipe (`|>`) and no longer re-exports magrittr's `%>%`.
 NULL
